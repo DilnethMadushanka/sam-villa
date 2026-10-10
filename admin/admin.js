@@ -112,6 +112,22 @@
   function build() { bookings(); messages(); rooms(); reviews(); content(); }
   function fail(e) { toast((e && e.code === 'permission-denied') ? 'Not allowed.' : 'Something went wrong. Try again.', true); }
 
+  /* ---------- receipt email (EmailJS free plan) ---------- */
+  function sendReceipt(id, b, btn) {
+    var ej = (window.SV_PAY || {}).emailjs || {};
+    if (!ej.publicKey || !ej.serviceId || !ej.templateId) return toast('Email is not set up yet. See ADMIN.md.', true);
+    if (!confirm('Email a receipt to ' + b.email + '?')) return;
+    btn.disabled = true;
+    fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ service_id: ej.serviceId, template_id: ej.templateId, user_id: ej.publicKey, template_params: {
+        to_email: b.email, guest_name: b.name, reference: id.slice(0, 8).toUpperCase(), room: b.room,
+        check_in: b.checkIn, check_out: b.checkOut, nights: b.nights, guests: b.guests, total: money(b.total), status: b.status
+      } })
+    }).then(function (r) { if (!r.ok) throw 0; toast('Receipt sent'); }).catch(function () { toast('Could not send the receipt.', true); })
+      .then(function () { btn.disabled = false; });
+  }
+
   /* ---------- bookings ---------- */
   function bookings() {
     var fs = fb.fs, p = $('panel-bookings');
@@ -125,17 +141,19 @@
       if (snap.empty) body.appendChild(h('tr', {}, h('td', { colspan: 7, class: 'ad-empty', text: 'No bookings yet.' })));
       snap.forEach(function (d) {
         var b = d.data(); if (b.status === 'new') fresh++;
-        var sel = h('select', { class: 'ad-sel', 'aria-label': 'Status' }, ['new', 'confirmed', 'cancelled'].map(function (s) { return h('option', { value: s, text: s, selected: s === b.status }); }));
+        var sel = h('select', { class: 'ad-sel', 'aria-label': 'Status' }, ['new', 'confirmed', 'paid', 'cancelled'].map(function (s) { return h('option', { value: s, text: s, selected: s === b.status }); }));
         sel.addEventListener('change', function () { fs.updateDoc(fs.doc(fb.db, 'bookings', d.id), { status: sel.value }).then(function () { toast('Status updated'); }).catch(fail); });
         var del = h('button', { class: 'ad-btn ad-btn--danger ad-btn--sm', type: 'button', text: 'Delete' });
         del.addEventListener('click', function () { if (confirm('Delete this booking permanently?')) fs.deleteDoc(fs.doc(fb.db, 'bookings', d.id)).catch(fail); });
+        var rc = h('button', { class: 'ad-btn ad-btn--sm', type: 'button', text: 'Email receipt' });
+        rc.addEventListener('click', function () { sendReceipt(d.id, b, rc); });
         body.appendChild(h('tr', { class: b.status === 'new' ? 'is-new' : '' },
           h('td', { text: fmt(b.createdAt) }),
           h('td', {}, h('strong', { text: b.name }), h('span', { class: 'ad-sub', text: b.email }), h('span', { class: 'ad-sub', text: b.phone || '' }), b.notes ? h('span', { class: 'ad-sub ad-msg', text: 'Note: ' + b.notes }) : null),
           h('td', { text: b.room }),
           h('td', {}, b.checkIn + ' to ' + b.checkOut, h('span', { class: 'ad-sub', text: b.nights + ' nights, ' + b.guests + ' guests' })),
           h('td', { text: money(b.total) }),
-          h('td', {}, sel), h('td', {}, del)));
+          h('td', {}, sel), h('td', {}, rc, ' ', del)));
       });
       var c = $('bk-count'); c.textContent = fresh; c.hidden = !fresh;
     }, fail));

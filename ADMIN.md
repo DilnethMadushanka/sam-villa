@@ -43,3 +43,15 @@ Run locally with a static server (modules and Firebase need http, not file://): 
 
 - Booking and message submissions are **requests**, not confirmed reservations. The site does not check live availability against bookings; the room status you set in the admin is what visitors see.
 - No email is sent automatically. You see requests in the admin; reply from your own email.
+
+## Payments and receipts (free plan)
+
+**Bank transfer.** Fill `bank` in `js/payment-config.js`. After booking, the guest sees your bank details and a reference (the first 8 characters of the booking id). When the money arrives, set the booking to **paid** in the admin.
+
+**Receipt emails (EmailJS free plan, 200 emails/month).**
+1. Create an account at emailjs.com, add an Email Service (e.g. Gmail), and copy the **Service ID**.
+2. Create a template. Set "To email" to `{{to_email}}`. Use these variables in the body: `{{guest_name}}`, `{{reference}}`, `{{room}}`, `{{check_in}}`, `{{check_out}}`, `{{nights}}`, `{{guests}}`, `{{total}}`, `{{status}}`. Copy the **Template ID**.
+3. Account > General: copy the **Public Key**, and under Security turn on "Allow EmailJS API for non-browser applications" only if you use it outside a browser (not needed here). Add your domain to the allowed origins.
+4. Put the three values in `emailjs` in `js/payment-config.js`, then click **Email receipt** on a booking in the admin.
+
+**Dialog Finance (Genie) card payments** need a server to hold the merchant secret, so they need the Firebase Blaze plan and are not part of the free setup yet.

@@ -129,11 +129,12 @@
           checkIn: pending.checkIn, checkOut: pending.checkOut,
           guests: pending.guests, nights: pending.nights, total: pending.total,
           notes: notes, status: 'new', createdAt: fb.fs.serverTimestamp()
-        }).then(function () {
+        }).then(function (ref) {
           stamp('svLastBooking'); form.reset();
-          say(status, 'Thank you. We have your request and will confirm within a few hours.');
-          var m = $('bk-msg'); if (m) m.textContent = 'Request sent. We will confirm shortly.';
-          setTimeout(function () { dlg.close(); }, 2200);
+          var code = ref.id.slice(0, 8).toUpperCase(), bk = (window.SV_PAY || {}).bank || {};
+          var how = bk.accountNo ? ' To secure your dates, transfer ' + pending.total + ' USD to ' + bk.bankName + ', ' + bk.accountName + ', account ' + bk.accountNo + (bk.branch ? ' (' + bk.branch + ')' : '') + ', and use reference ' + code + '. We will email your receipt once it arrives.' : '';
+          say(status, 'Thank you. Your booking reference is ' + code + '.' + how);
+          var m = $('bk-msg'); if (m) m.textContent = 'Request sent. Reference ' + code + '.';
         }).catch(function () { say(status, 'Could not send. Please try again or message us.', true); })
           .then(function () { btn.disabled = false; });
       });

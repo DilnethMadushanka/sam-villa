@@ -87,7 +87,7 @@ service cloud.firestore {
       allow create: if validBooking(request.resource.data);
       allow read, delete: if isAdmin();
       allow update: if isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
-                    && request.resource.data.status in ['new', 'confirmed', 'cancelled'];
+                    && request.resource.data.status in ['new', 'confirmed', 'paid', 'cancelled'];
     }
 
     match /messages/{id} {
