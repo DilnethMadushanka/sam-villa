@@ -34,7 +34,7 @@
 .sv-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--ground); border-bottom: 1px solid var(--line); }
 .sv-header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); height: var(--header-height); max-width: var(--content-max); margin-inline: auto; padding-inline: var(--space-6); }
 .sv-brand { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; color: var(--ink) !important; font: 600 20px/24px var(--font-display); white-space: nowrap; }
-.sv-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--jungle); color: var(--on-jungle); display: grid; place-items: center; font: 700 14px/1 var(--font-display); letter-spacing: -.02em; }
+.sv-mark { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: transparent; color: var(--on-jungle); display: grid; place-items: center; font: 700 14px/1 var(--font-display); letter-spacing: -.02em; }
 .sv-nav { display: flex; gap: var(--space-6); }
 .sv-nav__link { position: relative; font: 500 15px/20px var(--font-sans); color: var(--ink) !important; text-decoration: none; padding-block: var(--space-2); white-space: nowrap; }
 .sv-nav__link[aria-current="page"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--coral); }
@@ -198,3 +198,4 @@
   @supports (animation-timeline: view()) { .sv-reveal { animation: sv-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; } }
 }
 @media (prefers-reduced-motion: reduce) { .sv-root *, .sv-root *::before, .sv-root *::after { transition: none !important; animation: none !important; } }
+.sv-mark img { width: 100%; height: 100%; display: block; object-fit: cover; }

@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sam Villa | Garden bed and breakfast</title>
+    <link rel="icon" type="image/png" href="images/logo-64.png">
+    <link rel="apple-touch-icon" href="images/logo-256.png">
 <meta name="description" content="Four bright garden rooms, breakfast on the veranda, and hosts who know every good path nearby.">
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/tokens.css">
@@ -22,21 +23,24 @@
 </head>
 <body>
 <div class="sv-loader" id="loader" role="status" aria-label="Loading Sam Villa">
-<div class="sv-loader__panel sv-loader__panel--top"></div><div class="sv-loader__panel sv-loader__panel--bot"></div>
+<div class="sv-loader__sheet">
 <div class="sv-loader__center">
-<div class="sv-loader__ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="sv-loader__track" cx="60" cy="60" r="56"/><circle class="sv-loader__bar" cx="60" cy="60" r="56"/></svg><span class="sv-loader__mark" aria-hidden="true">SV</span></div>
+<div class="sv-loader__arch"><img class="sv-loader__mark" src="images/logo-256.png" alt="" width="132" height="132"></div>
 <div class="sv-loader__name" aria-hidden="true"><span style="--n:0">S</span><span style="--n:1">a</span><span style="--n:2">m</span><span style="--n:3">&nbsp;</span><span style="--n:4">V</span><span style="--n:5">i</span><span style="--n:6">l</span><span style="--n:7">l</span><span style="--n:8">a</span></div>
+<p class="sv-loader__tag" aria-hidden="true">Garden bed and breakfast</p>
+<div class="sv-loader__meter" aria-hidden="true"><span class="sv-loader__bar"></span></div>
 <div class="sv-loader__pct" aria-hidden="true">0%</div>
+</div>
 </div>
 </div>
 <div class="sv-root">
 <header class="sv-header"><div class="sv-header__inner">
-<a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true"><img src="images/logo-icon.svg" alt="Sam Villa" width="36" height="36"></span>Sam Villa</a>
+<a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true"><img src="images/logo-64.png" alt="" width="36" height="36"></span>Sam Villa</a>
 <nav class="sv-nav" aria-label="Main"><a class="sv-nav__link" href="#rooms" aria-current="page">Rooms</a><a class="sv-nav__link" href="#breakfast">Breakfast</a><a class="sv-nav__link" href="#day">A day here</a><a class="sv-nav__link" href="#around-us">Around us</a><a class="sv-nav__link" href="#reviews">Reviews</a><a class="sv-nav__link" href="#contact">Contact</a></nav>
 <div class="sv-header__actions"><a class="sv-button sv-button--primary sv-header__cta" href="#book">Check availability</a><button class="sv-button sv-button--quiet sv-menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="sheet"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></svg>Menu</button></div>
 </div></header>
 <div class="sv-sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Menu">
-<div style="display:flex;justify-content:space-between;align-items:center"><a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true"><img src="images/logo-icon.svg" alt="Sam Villa" width="36" height="36"></span>Sam Villa</a><button class="sv-button sv-button--quiet" id="menu-close" type="button"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>Close</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true"><img src="images/logo-64.png" alt="" width="36" height="36"></span>Sam Villa</a><button class="sv-button sv-button--quiet" id="menu-close" type="button"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>Close</button></div>
 <nav class="sv-sheet__links" aria-label="Mobile"><a href="#rooms">Rooms</a><a href="#breakfast">Breakfast</a><a href="#around-us">Around us</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a></nav>
 <a class="sv-button sv-button--primary sv-button--block" href="#book">Check availability</a>
 </div>
@@ -155,7 +159,7 @@
 </section></div>
 </main>
 <footer class="sv-footer" id="contact"><div class="sv-footer__inner">
-<div style="display:grid;gap:var(--space-3);align-content:start"><a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true">SV</span>Sam Villa</a><p class="sv-muted" style="margin:0;max-width:32ch">A small bed and breakfast with four garden rooms.</p></div>
+<div style="display:grid;gap:var(--space-3);align-content:start"><a class="sv-brand" href="#top"><span class="sv-mark" aria-hidden="true"><img src="images/logo-64.png" alt="" width="36" height="36"></span>Sam Villa</a><p class="sv-muted" style="margin:0;max-width:32ch">A small bed and breakfast with four garden rooms.</p></div>
 <div><p class="sv-footer__head">Stay</p><ul class="sv-footer__list"><li><a href="#rooms">Rooms</a></li><li><a href="#breakfast">Breakfast</a></li><li><a href="#around-us">Around us</a></li><li><a href="#reviews">Reviews</a></li></ul></div>
 <div><p class="sv-footer__head">Contact</p><ul class="sv-footer__list"><li><button class="sv-copy" type="button" data-copy="+00 000 000 000"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46ZM176,208A128.14,128.14,0,0,1,48,80,40.2,40.2,0,0,1,82.87,40a.61.61,0,0,0,0,.12l21,47L83.2,111.86a6.13,6.13,0,0,0-.57.77,16,16,0,0,0-1,15.7c9.06,18.53,27.73,37.06,46.46,46.11a16,16,0,0,0,15.75-1.14,8.44,8.44,0,0,0,.74-.56L168.89,152l47,21.05h0s.08,0,.11,0A40.21,40.21,0,0,1,176,208Z"/></svg>+00 000 000 000</button></li><li><button class="sv-copy" type="button" data-copy="hello@samvilla.example"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg>hello@samvilla.example</button></li><li><button class="sv-copy" type="button" data-copy="+00 000 000 000"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg>WhatsApp</button></li></ul></div>
 <div><p class="sv-footer__head">Good to know</p><ul class="sv-footer__list"><li>Check-in from 14:00</li><li>Check-out by 11:00</li><li><a href="#contact">House rules</a></li><li><a href="#contact">Cancellation policy</a></li></ul></div>

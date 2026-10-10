@@ -29,7 +29,7 @@
   var pct=loader&&loader.querySelector('.sv-loader__pct');
   var finished=false;
   function setP(p){
-    if(bar)bar.style.strokeDashoffset=String(352*(1-p));
+    if(bar)bar.style.transform='scaleX('+p+')';
     if(pct)pct.textContent=Math.round(p*100)+'%';
   }
   function reveal(){
