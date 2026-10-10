@@ -166,3 +166,20 @@ html.js .sv-room.fx.in:hover,html.js .sv-tile.fx.in:hover,html.js .sv-travel__it
   .sv-stage__bg img,.sv-stage__glow,.sv-loader__mark,.sv-loader__arch{animation:none!important}
   .sv-loader__sheet{transition-duration:.01s}
 }
+
+/* Loader fit: no page scroll underneath, and it scales down on short or narrow screens */
+html.is-loading,html.is-loading body{overflow:hidden}
+.sv-loader{height:100vh;height:100dvh}
+.sv-loader__center{max-width:92vw;text-align:center}
+@media (max-height:620px){
+  .sv-loader__center{gap:var(--space-2)}
+  .sv-loader__arch{width:120px;height:140px}
+  .sv-loader__mark{width:92px;height:92px}
+  .sv-loader__name{font-size:24px;line-height:28px;margin-top:0}
+  .sv-loader__meter{margin-top:var(--space-1)}
+}
+@media (max-height:420px){.sv-loader__tag,.sv-loader__pct{display:none}.sv-loader__arch{width:96px;height:112px}.sv-loader__mark{width:72px;height:72px}}
+@media (max-width:360px){.sv-loader__name{font-size:26px}.sv-loader__tag{letter-spacing:.1em}}
+/* The curved edge must sit below the screen at rest, otherwise the page shows through under it */
+.sv-loader__sheet{inset:0 0 -12vh 0;padding-bottom:12vh}
+.sv-loader.is-done .sv-loader__sheet{transform:translateY(-102%)}
