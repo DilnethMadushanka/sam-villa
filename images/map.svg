@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bce3dc" />
+      <stop offset="100%" stop-color="#9dd4cb" />
+    </linearGradient>
+    <linearGradient id="sandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5edd6" />
+      <stop offset="100%" stop-color="#eadebe" />
+    </linearGradient>
+    <filter id="mapShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#1f3028" flood-opacity="0.15" />
+    </filter>
+    <filter id="pinShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#c8452f" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Land Base -->
+  <rect width="1200" height="900" fill="#f7f5ee" />
+
+  <!-- Tropical Forest / Green reserves -->
+  <path d="M 0 0 L 480 0 C 440 120 490 200 410 320 C 350 420 200 460 120 540 C 40 620 20 800 0 900 Z" fill="#e7efe9" />
+  <path d="M 720 0 C 780 150 900 180 960 300 C 1020 420 1150 460 1200 480 L 1200 0 Z" fill="#e7efe9" opacity="0.8" />
+  <path d="M 520 600 C 620 550 750 620 850 560 C 920 520 980 540 1020 480 C 1080 580 1020 720 920 800 C 820 880 680 850 520 900 Z" fill="#e3eee7" />
+
+  <!-- Water Body / Coastline (South-West Coast) -->
+  <!-- Sand Shoreline -->
+  <path d="M 0 900 L 0 680 C 120 660 220 710 340 640 C 460 570 540 450 640 400 C 740 350 840 380 980 290 C 1080 220 1140 180 1200 150 L 1200 900 Z" fill="url(#sandGrad)" />
+  <!-- Ocean -->
+  <path d="M 0 900 L 0 710 C 110 690 210 740 330 670 C 450 600 530 480 630 430 C 730 380 830 410 970 320 C 1070 250 1130 210 1200 180 L 1200 900 Z" fill="url(#oceanGrad)" />
+
+  <!-- Subtle ocean waves -->
+  <g stroke="#ffffff" stroke-width="2.5" fill="none" opacity="0.45" stroke-linecap="round">
+    <path d="M 120 820 C 160 810 200 825 240 815" />
+    <path d="M 380 780 C 420 770 460 785 500 775" />
+    <path d="M 700 620 C 740 610 780 625 820 615" />
+    <path d="M 880 530 C 920 520 960 535 1000 525" />
+    <path d="M 520 720 C 560 710 600 725 640 715" />
+    <path d="M 980 430 C 1020 420 1060 435 1100 425" />
+  </g>
+
+  <!-- Palm Tree & Garden motifs on land -->
+  <g fill="#bed6c7" opacity="0.6">
+    <!-- Cluster 1 -->
+    <circle cx="280" cy="220" r="14" />
+    <circle cx="305" cy="235" r="18" />
+    <circle cx="265" cy="245" r="12" />
+    <!-- Cluster 2 -->
+    <circle cx="780" cy="180" r="22" />
+    <circle cx="820" cy="195" r="16" />
+    <!-- Cluster 3 -->
+    <circle cx="480" cy="460" r="18" />
+    <circle cx="515" cy="480" r="15" />
+  </g>
+
+  <!-- Secondary Roads / Local Streets -->
+  <g fill="none" stroke="#e8e2d3" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 150 0 L 180 320 L 360 440 L 520 380 L 680 420" />
+    <path d="M 360 440 L 460 620 L 620 600" />
+    <path d="M 780 0 L 760 220 L 920 340 L 980 420" />
+    <path d="M 520 380 L 620 180 L 760 220" />
+    <path d="M 920 340 L 1150 280" />
+  </g>
+  <g fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 150 0 L 180 320 L 360 440 L 520 380 L 680 420" />
+    <path d="M 360 440 L 460 620 L 620 600" />
+    <path d="M 780 0 L 760 220 L 920 340 L 980 420" />
+    <path d="M 520 380 L 620 180 L 760 220" />
+    <path d="M 920 340 L 1150 280" />
+  </g>
+
+  <!-- Main Coastal Highway (Galle Road / Coast Avenue) -->
+  <path d="M 0 450 C 180 410 320 380 460 360 C 600 340 760 320 900 240 C 1050 160 1140 100 1200 70" fill="none" stroke="#ebdcb9" stroke-width="18" stroke-linecap="round" />
+  <path d="M 0 450 C 180 410 320 380 460 360 C 600 340 760 320 900 240 C 1050 160 1140 100 1200 70" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" />
+  <path d="M 0 450 C 180 410 320 380 460 360 C 600 340 760 320 900 240 C 1050 160 1140 100 1200 70" fill="none" stroke="#eed592" stroke-width="2" stroke-dasharray="8 6" stroke-linecap="round" />
+
+  <!-- Footpath from Villa to Beach -->
+  <path d="M 570 330 C 580 400 620 440 680 470 C 720 490 760 520 810 560" fill="none" stroke="#d96b52" stroke-width="4" stroke-dasharray="6 6" stroke-linecap="round" />
+
+  <!-- Footpath from Villa to Cafes -->
+  <path d="M 540 310 C 490 320 430 340 380 320" fill="none" stroke="#1f4b39" stroke-width="3.5" stroke-dasharray="6 6" stroke-linecap="round" />
+
+  <!-- Railway Line -->
+  <path d="M 0 350 C 180 310 360 280 540 240 C 720 200 900 140 1200 0" fill="none" stroke="#88928d" stroke-width="3" stroke-dasharray="10 8" />
+
+  <!-- Landmark 1: Beach (8 min walk) -->
+  <g transform="translate(810, 560)" filter="url(#mapShadow)">
+    <rect x="-85" y="-36" width="170" height="48" rx="24" fill="#ffffff" stroke="#cde3db" stroke-width="1.5" />
+    <circle cx="-55" cy="-12" r="15" fill="#3fa394" />
+    <!-- Wave Icon -->
+    <path d="M -62 -11 C -59 -14 -56 -10 -53 -13 C -50 -16 -47 -12 -44 -15" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+    <text x="-30" y="-16" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#1b382b">Beach</text>
+    <text x="-30" y="-1" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#e36a53">8 min walk</text>
+  </g>
+
+  <!-- Landmark 2: Cafes and Market (5 min walk) -->
+  <g transform="translate(360, 310)" filter="url(#mapShadow)">
+    <rect x="-95" y="-36" width="190" height="48" rx="24" fill="#ffffff" stroke="#e6dfce" stroke-width="1.5" />
+    <circle cx="-65" cy="-12" r="15" fill="#f09653" />
+    <!-- Cup / Shop Icon -->
+    <path d="M -70 -16 H -60 V -9 C -60 -6 -63 -4 -65 -4 C -67 -4 -70 -6 -70 -9 Z" fill="#ffffff" />
+    <path d="M -60 -14 H -57 C -56 -14 -55 -13 -55 -12 V -11 C -55 -10 -56 -9 -57 -9 H -60" fill="none" stroke="#ffffff" stroke-width="1.5" />
+    <text x="-40" y="-16" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#1b382b">Cafes &amp; Market</text>
+    <text x="-40" y="-1" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#e36a53">5 min walk</text>
+  </g>
+
+  <!-- Landmark 3: Railway Station (15 min drive) -->
+  <g transform="translate(240, 140)" filter="url(#mapShadow)">
+    <rect x="-85" y="-36" width="170" height="48" rx="24" fill="#ffffff" stroke="#e6dfce" stroke-width="1.5" />
+    <circle cx="-55" cy="-12" r="15" fill="#2d5a43" />
+    <!-- Train Icon -->
+    <rect x="-61" y="-18" width="12" height="12" rx="2" fill="#ffffff" />
+    <circle cx="-58" cy="-9" r="1" fill="#2d5a43" />
+    <circle cx="-52" cy="-9" r="1" fill="#2d5a43" />
+    <text x="-30" y="-16" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1b382b">Railway Station</text>
+    <text x="-30" y="-1" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#697a71">15 min drive</text>
+  </g>
+
+  <!-- Landmark 4: Airport Indicator (Northbound) -->
+  <g transform="translate(1060, 90)" filter="url(#mapShadow)">
+    <rect x="-85" y="-32" width="170" height="44" rx="22" fill="#ffffff" stroke="#e6dfce" stroke-width="1.5" />
+    <circle cx="-55" cy="-10" r="14" fill="#3b6978" />
+    <!-- Plane Icon -->
+    <path d="M -55 -17 L -51 -11 L -47 -11 L -52 -7 L -51 -3 L -55 -5 L -59 -3 L -58 -7 L -63 -11 L -59 -11 Z" fill="#ffffff" />
+    <text x="-30" y="-15" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1b382b">Airport (CMB)</text>
+    <text x="-30" y="0" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#697a71">1 h 30 min drive</text>
+  </g>
+
+  <!-- Compass Rose -->
+  <g transform="translate(1120, 800)">
+    <circle cx="0" cy="0" r="28" fill="#ffffff" stroke="#e2dccf" stroke-width="1.5" filter="url(#mapShadow)" />
+    <polygon points="0,-20 5,-4 0,0 -5,-4" fill="#d96b52" />
+    <polygon points="0,20 5,4 0,0 -5,4" fill="#a4b4ab" />
+    <polygon points="20,0 4,5 0,0 4,-5" fill="#a4b4ab" />
+    <polygon points="-20,0 -4,5 0,0 -4,-5" fill="#a4b4ab" />
+    <text x="0" y="-24" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#d96b52" text-anchor="middle">N</text>
+  </g>
+
+  <!-- Ocean label -->
+  <text x="960" y="740" font-family="'Bricolage Grotesque', 'Georgia', serif" font-size="26" font-style="italic" font-weight="500" fill="#4a8f83" opacity="0.6" letter-spacing="0.1em">Indian Ocean</text>
+
+  <!-- MAIN PIN: SAM VILLA -->
+  <g transform="translate(560, 310)">
+    <!-- Pulse Ring -->
+    <circle cx="0" cy="-28" r="42" fill="#d96b52" opacity="0.18">
+      <animate attributeName="r" values="32;46;32" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.25;0.05;0.25" dur="3s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Pin Marker -->
+    <g filter="url(#pinShadow)">
+      <path d="M 0 0 C -18 -24 -26 -40 -26 -56 C -26 -70 -14 -82 0 -82 C 14 -82 26 -70 26 -56 C 26 -40 18 -24 0 0 Z" fill="#d96b52" />
+      <circle cx="0" cy="-56" r="14" fill="#ffffff" />
+      <text x="0" y="-51" font-family="'Bricolage Grotesque', 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#d96b52" text-anchor="middle">SV</text>
+    </g>
+
+    <!-- Pin Callout Label -->
+    <g transform="translate(0, -96)" filter="url(#mapShadow)">
+      <rect x="-70" y="-28" width="140" height="34" rx="17" fill="#1b382b" />
+      <text x="0" y="-7" font-family="'Bricolage Grotesque', 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.02em">Sam Villa</text>
+    </g>
+  </g>
+
+  <!-- Subtle Scale Bar -->
+  <g transform="translate(80, 830)" filter="url(#mapShadow)">
+    <rect x="-10" y="-20" width="130" height="30" rx="15" fill="#ffffff" opacity="0.9" />
+    <line x1="10" y1="-5" x2="100" y2="-5" stroke="#1b382b" stroke-width="2" />
+    <line x1="10" y1="-9" x2="10" y2="-1" stroke="#1b382b" stroke-width="2" />
+    <line x1="100" y1="-9" x2="100" y2="-1" stroke="#1b382b" stroke-width="2" />
+    <text x="55" y="-8" font-family="'Figtree', 'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#1b382b" text-anchor="middle">500 m</text>
+  </g>
+</svg>
