@@ -54,4 +54,13 @@ Run locally with a static server (modules and Firebase need http, not file://): 
 3. Account > General: copy the **Public Key**, and under Security turn on "Allow EmailJS API for non-browser applications" only if you use it outside a browser (not needed here). Add your domain to the allowed origins.
 4. Put the three values in `emailjs` in `js/payment-config.js`, then click **Email receipt** on a booking in the admin.
 
-**Dialog Finance (Genie) card payments** need a server to hold the merchant secret, so they need the Firebase Blaze plan and are not part of the free setup yet.
+**Dialog Genie card payments (Vercel functions in `/api`).** After booking, the guest can click **Pay by card**. `api/create-payment.js` recomputes the price from the rooms collection and asks Genie for a payment link. `api/dialog-webhook.js` re-fetches the transaction from Genie with the secret key, checks the amount, then sets the booking to **paid**. Set these in Vercel > Settings > Environment Variables, then redeploy:
+
+| Variable | Value |
+| --- | --- |
+| `DIALOG_SECRET_KEY` | Genie API key (secret, never in the repo) |
+| `FIREBASE_SERVICE_ACCOUNT` | Service account JSON (or base64 of it) |
+| `USD_TO_LKR` | Exchange rate used to turn the USD room rates into LKR, e.g. `300` |
+| `PAY_CURRENCY` | Optional, default `LKR` (must match the merchant account currency) |
+| `SITE_ORIGIN` | Optional, default `https://sam-villa.vercel.app` |
+| `EMAILJS_PRIVATE_KEY`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID` | Optional: automatic receipt after payment (enable "Allow non-browser API calls" in EmailJS) |

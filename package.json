@@ -1,0 +1,6 @@
+{
+  "name": "sam-villa",
+  "private": true,
+  "engines": { "node": "20.x" },
+  "dependencies": { "firebase-admin": "^12.7.0" }
+}

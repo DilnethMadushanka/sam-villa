@@ -100,6 +100,33 @@
   var dlg = $('reserve-dialog'), form = $('rv-form'), pending = null;
   if (dlg && dlg.showModal && form) {
     var status = $('rv-status');
+    /* ---------- pay by card (Dialog Genie, through /api/create-payment) ---------- */
+    function addPayButton(bookingId) {
+      var old = $('rv-pay'); if (old) old.remove();
+      var b = document.createElement('button');
+      b.type = 'button'; b.id = 'rv-pay'; b.className = 'sv-button sv-button--primary'; b.textContent = 'Pay by card';
+      b.addEventListener('click', function () {
+        b.disabled = true; b.textContent = 'Opening payment page...';
+        fetch('/api/create-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bookingId: bookingId }) })
+          .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.url) throw 0; return j.url; }); })
+          .then(function (url) { location.href = url; })
+          .catch(function () { b.disabled = false; b.textContent = 'Pay by card'; say(status, 'Card payment is not available right now. You can pay by bank transfer instead.', true); });
+      });
+      status.insertAdjacentElement('afterend', b);
+    }
+
+    /* Back from the payment page: the booking is marked paid by the server once Dialog confirms. */
+    if (/[?&]pay=return/.test(location.search)) {
+      var note = document.createElement('div');
+      note.setAttribute('role', 'status');
+      note.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;max-width:min(92vw,520px);padding:14px 20px;border-radius:999px;background:var(--jungle);color:var(--on-jungle);font:600 15px/22px var(--font-sans);box-shadow:var(--shadow-2);text-align:center';
+      var m = /[?&]ref=([A-Z0-9]+)/.exec(location.search);
+      note.textContent = 'Thank you. We will email your receipt once the payment is confirmed' + (m ? ' (reference ' + m[1] + ').' : '.');
+      document.body.appendChild(note);
+      setTimeout(function () { note.remove(); }, 12000);
+      history.replaceState(null, '', location.pathname);
+    }
+
     document.addEventListener('sv:reserve', function (e) {
       pending = e.detail;
       $('rv-summary').textContent = pending.room + ', ' + pending.nights + (pending.nights === 1 ? ' night' : ' nights') + ', ' + pending.guests + (pending.guests === 1 ? ' guest' : ' guests') + ', $' + pending.total + ' total';
@@ -135,6 +162,7 @@
           var how = bk.accountNo ? ' To secure your dates, transfer ' + pending.total + ' USD to ' + bk.bankName + ', ' + bk.accountName + ', account ' + bk.accountNo + (bk.branch ? ' (' + bk.branch + ')' : '') + ', and use reference ' + code + '. We will email your receipt once it arrives.' : '';
           say(status, 'Thank you. Your booking reference is ' + code + '.' + how);
           var m = $('bk-msg'); if (m) m.textContent = 'Request sent. Reference ' + code + '.';
+          addPayButton(ref.id);
         }).catch(function () { say(status, 'Could not send. Please try again or message us.', true); })
           .then(function () { btn.disabled = false; });
       });
