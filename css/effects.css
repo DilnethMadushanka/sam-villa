@@ -2,9 +2,10 @@
    Everything animated is gated on html.js so the page stays fully visible without JS,
    and on prefers-reduced-motion so it stays still for people who ask for that. */
 
-html{overflow-x:hidden}
-body{overflow-x:hidden}
+body{overflow-x:clip}
+html{overscroll-behavior-y:none}
 html.is-loading,html.is-loading body{overflow:hidden}
+html.menu-open,html.menu-open body{overflow:hidden}
 
 /* ---------- Loading screen ---------- */
 .sv-loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;pointer-events:all}

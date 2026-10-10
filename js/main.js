@@ -1,6 +1,6 @@
 (function(){
   var open=document.getElementById('menu-open'),sheet=document.getElementById('sheet'),close=document.getElementById('menu-close');
-  function set(v){sheet.hidden=!v;open.setAttribute('aria-expanded',String(v));if(v){close.focus()}else{open.focus()}}
+  function set(v){sheet.hidden=!v;document.documentElement.classList.toggle('menu-open',v);open.setAttribute('aria-expanded',String(v));if(v){close.focus()}else{open.focus()}}
   open.addEventListener('click',function(){set(true)});close.addEventListener('click',function(){set(false)});
   sheet.addEventListener('click',function(e){if(e.target.tagName==='A')set(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!sheet.hidden)set(false)});
