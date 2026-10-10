@@ -14,7 +14,8 @@
   /* Booking results: real totals for the chosen dates */
   var results=document.createElement('div');results.className='sv-results';results.hidden=true;results.setAttribute('aria-live','polite');
   form.appendChild(results);
-  form.addEventListener('submit',function(){
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
     var n=nights();if(!n)return;
     var g=guests();
     results.innerHTML='<p class="sv-results__title">Rooms for '+n+(n===1?' night':' nights')+', '+g+(g===1?' guest':' guests')+'</p>';
