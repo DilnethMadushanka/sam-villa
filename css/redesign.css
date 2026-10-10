@@ -1,0 +1,108 @@
+/* Sam Villa redesign layer, loaded last.
+   Direction: calm editorial. A floating pill header, one deep-forest ink, rounder shapes,
+   and one button system everywhere: label on the left, a round arrow chip on the right. */
+
+:root{
+  --forest:#17382c;
+  --radius-lg:28px;
+  --radius-md:16px;
+  --arrow-dark:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%2317382c' d='M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z'/%3E%3C/svg%3E");
+  --arrow-light:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%23fffffe' d='M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z'/%3E%3C/svg%3E");
+}
+
+/* ---------- Button system ---------- */
+/* default look = secondary: white pill, mint chip */
+.sv-button{--b-bg:#fffffe;--b-bg-h:var(--forest);--b-fg:var(--forest);--b-fg-h:#fffffe;--b-bd:var(--line-strong);--b-dot:var(--jungle-soft);--b-dot-h:var(--coral);--b-arrow:var(--arrow-dark);--b-arrow-h:var(--arrow-dark);--b-sh:none;--chip:36px}
+.sv-button--primary{--b-bg:var(--forest);--b-bg-h:#0f261d;--b-fg:#fffffe;--b-fg-h:#fffffe;--b-bd:transparent;--b-dot:var(--coral);--b-dot-h:#ffb09c;--b-arrow:var(--arrow-dark);--b-arrow-h:var(--arrow-dark);--b-sh:0 10px 26px rgba(23,56,44,.3)}
+.sv-button--quiet{--b-bg:transparent;--b-bg-h:var(--jungle-soft);--b-fg:var(--ink);--b-fg-h:var(--ink);--b-bd:transparent;--b-sh:none}
+/* on photos and the green closing band: invert */
+.sv-stage .sv-button--primary,.sv-cta .sv-button--primary,.sv-dock .sv-button--primary{--b-bg:#fffffe;--b-bg-h:var(--jungle-soft);--b-fg:var(--forest);--b-fg-h:var(--forest);--b-dot:var(--forest);--b-dot-h:var(--jungle);--b-arrow:var(--arrow-light);--b-arrow-h:var(--arrow-light);--b-sh:0 12px 30px rgba(0,0,0,.28)}
+.sv-stage .sv-button--secondary,.sv-cta .sv-button--secondary{--b-bg:rgba(255,255,254,.12);--b-bg-h:rgba(255,255,254,.26);--b-fg:#fffffe;--b-fg-h:#fffffe;--b-bd:rgba(255,255,254,.7);--b-dot:#fffffe;--b-dot-h:#fffffe;--b-arrow:var(--arrow-dark);--b-arrow-h:var(--arrow-dark)}
+.sv-dock .sv-button--primary{--b-sh:none}
+
+.sv-root a.sv-button:not(.sv-button--quiet),.sv-root button.sv-button:not(.sv-button--quiet),
+.sv-root .sv-stage a.sv-button,.sv-root .sv-cta a.sv-button,.sv-root a.sv-dock__btn{
+  position:relative;overflow:hidden;min-height:56px;padding:8px 8px 8px 26px;gap:var(--space-4);justify-content:space-between;
+  background:var(--b-bg);color:var(--b-fg);border:1.5px solid var(--b-bd);box-shadow:var(--b-sh);
+  font:600 15px/20px var(--font-sans);letter-spacing:.005em;
+  transition:background-color .3s,color .3s,box-shadow .3s,transform .3s cubic-bezier(.16,1,.3,1),border-color .3s}
+.sv-root a.sv-button:not(.sv-button--quiet)::before,.sv-root button.sv-button:not(.sv-button--quiet)::before{
+  content:"";order:2;flex:none;width:var(--chip);height:var(--chip);border-radius:50%;
+  background:var(--b-dot) var(--b-arrow) center/16px 16px no-repeat;
+  transition:transform .45s cubic-bezier(.16,1,.3,1),background-color .3s}
+.sv-root a.sv-button:not(.sv-button--quiet):hover,.sv-root button.sv-button:not(.sv-button--quiet):hover{background:var(--b-bg-h);color:var(--b-fg-h);transform:translateY(-2px)}
+.sv-root a.sv-button:not(.sv-button--quiet):hover::before,.sv-root button.sv-button:not(.sv-button--quiet):hover::before{transform:rotate(-45deg) scale(1.08);background-color:var(--b-dot-h);background-image:var(--b-arrow-h)}
+.sv-root a.sv-button:active,.sv-root button.sv-button:active{transform:scale(.98)}
+/* buttons with a leading icon keep it next to the label */
+.sv-root a.sv-button:not(.sv-button--quiet) .sv-icon{margin-right:calc(-1 * var(--space-2))}
+.sv-button--block{justify-content:space-between}
+/* compact buttons */
+.sv-header__cta,.sv-room__foot .sv-button,.sv-result .sv-button{--chip:30px}
+.sv-root .sv-header__cta,.sv-root .sv-room__foot .sv-button,.sv-root .sv-result .sv-button{min-height:46px;padding:6px 6px 6px 20px;font-size:14px}
+.sv-root .sv-header__cta::before,.sv-root .sv-room__foot .sv-button::before,.sv-root .sv-result .sv-button::before{background-size:14px 14px}
+.sv-root a.sv-dock__btn{min-height:46px;padding-inline:20px 6px;--chip:30px}
+.sv-root .sv-hero__ctas .sv-button{min-width:210px}
+/* quiet (menu, close) and arrows stay simple pills/circles */
+.sv-root .sv-button--quiet{min-height:48px;border-radius:var(--radius-pill);padding-inline:var(--space-4)}
+.sv-button[disabled]{--b-bg:var(--ground-sunk);--b-fg:var(--ink-muted);--b-bd:var(--line);--b-dot:var(--line);--b-sh:none}
+.sv-root .sv-button--primary::after{display:none}
+
+/* ---------- Floating pill header ---------- */
+.sv-header,.sv-header.is-scrolled{background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;top:calc(env(safe-area-inset-top,0px) + 10px);padding-inline:var(--space-4);pointer-events:none}
+.sv-header__inner{pointer-events:auto;max-width:1160px;height:66px;padding-inline:var(--space-3) 10px;border-radius:var(--radius-pill);background:rgba(255,255,254,.94);border:1px solid var(--line);box-shadow:0 10px 34px rgba(18,32,26,.1);transition:box-shadow .3s,transform .4s cubic-bezier(.16,1,.3,1)}
+.sv-header.is-scrolled .sv-header__inner{box-shadow:0 16px 44px rgba(18,32,26,.16)}
+.sv-brand{padding-left:var(--space-1)}
+.sv-nav{gap:var(--space-1)}
+.sv-nav__link{padding:9px 16px;border-radius:var(--radius-pill);transition:background-color .25s,color .25s}
+.sv-nav__link::after{display:none!important}
+.sv-nav__link:hover{background:var(--jungle-soft)}
+.sv-root .sv-nav__link[aria-current="page"]{background:var(--forest);color:#fffffe!important}
+@media (max-width:1023px){.sv-header__inner{height:60px;padding-inline:var(--space-3) 6px}.sv-header{padding-inline:var(--space-2)}}
+.sv-sheet{border-radius:0 0 32px 32px;box-shadow:var(--shadow-3)}
+
+/* ---------- Shapes, rhythm ---------- */
+.sv-wrap{max-width:1200px}
+.sv-stage{margin-top:var(--space-3);border-radius:44px}
+.sv-booking{border-radius:32px;padding:var(--space-8)}
+.sv-room{border-radius:32px;padding:var(--space-4)}
+.sv-room__media{border-radius:calc(var(--radius-lg) - 4px)}
+.sv-tile,.sv-travel__item,.sv-review,.sv-score,.sv-quote,.sv-step{border-radius:var(--radius-lg)}
+.sv-band{border-radius:44px;min-height:520px}
+.sv-cta{border-radius:44px;padding:var(--space-24) var(--space-6)}
+.sv-footer{border-radius:48px 48px 0 0;margin-top:var(--space-8)}
+.sv-sec{padding-block:var(--space-24) 0}
+
+/* Amenities become a calm sunk panel */
+.sv-sec#amenities{margin-top:var(--space-24);padding:var(--space-12);background:var(--ground-sunk);border-radius:44px}
+.sv-sec#amenities .sv-tile:not(.sv-tile--tall):not(.sv-tile--warm):not(.sv-tile--soft){background:#fffffe}
+
+/* Headline weight and measure */
+.sv-h--m{font-weight:600}
+.sv-lede{max-width:48ch}
+
+/* Pills a little more refined */
+.sv-pill{padding:4px 12px}
+.sv-eyebrow{letter-spacing:.1em}
+
+/* Fields */
+.sv-field__input{min-height:54px;border-radius:var(--radius-pill);background:#fffffe;transition:border-color .2s,box-shadow .2s}
+.sv-field__input:focus{outline:none;border-color:var(--jungle);box-shadow:0 0 0 4px var(--jungle-soft)}
+
+/* Footer links and copy buttons */
+.sv-copy{padding:var(--space-1) 0;transition:color .2s}
+.sv-copy:hover{color:var(--jungle)}
+
+@media (max-width:767px){
+  .sv-stage{border-radius:32px}
+  .sv-band,.sv-cta{border-radius:32px}
+  .sv-cta{padding-block:var(--space-16)}
+  .sv-sec#amenities{margin-top:var(--space-16);padding:var(--space-6) var(--space-4);border-radius:32px;margin-inline:calc(-1 * var(--space-2))}
+  .sv-sec{padding-block:var(--space-16) 0}
+  .sv-footer{border-radius:32px 32px 0 0}
+  .sv-root .sv-hero__ctas .sv-button{min-width:0;flex:1 1 100%}
+  .sv-booking{padding:var(--space-4);border-radius:28px}
+}
+
+/* Hero headline accent: gradient has to sit on the word spans themselves */
+.sv-stage .sv-h--xl em{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#ffb7a3}
+.sv-stage .sv-h--xl em .sv-word>span{background:linear-gradient(100deg,#ffc2b0,#ff8a6e 60%,#ffd3a6);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.04em}
