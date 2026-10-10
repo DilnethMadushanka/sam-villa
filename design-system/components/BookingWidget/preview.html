@@ -1,0 +1,23 @@
+<!-- @dsCard group="Booking" height=560 subtitle="Bar on the home page, panel on room pages" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Preview</title>
+<style>body{margin:0;background:var(--ground)} .wrap{padding:var(--space-6);}</style></head>
+<body class="sv-root"><div class="wrap">
+<form class="sv-booking" id="book" novalidate>
+<div class="sv-booking__row">
+<label class="sv-field" for="ci"><span class="sv-field__label">Check-in</span><input class="sv-field__input" id="ci" type="date" value="2026-11-14"></label>
+<label class="sv-field" for="co" id="co-field"><span class="sv-field__label">Check-out</span><input class="sv-field__input" id="co" type="date" value="2026-11-17"></label>
+<label class="sv-field" for="gu"><span class="sv-field__label">Guests</span><select class="sv-field__input" id="gu"><option>1 guest</option><option selected>2 guests</option><option>3 guests</option><option>4 guests</option></select></label>
+<button class="sv-button sv-button--primary sv-button--block" type="submit">Check availability</button>
+</div>
+<div class="sv-booking__note" aria-live="polite"><span id="bk-sum"><strong>3 nights</strong> for 2 guests, breakfast included</span><span id="bk-msg">Free cancellation up to 7 days before arrival</span></div>
+</form><div style="height:24px"></div><form class="sv-booking" novalidate style="max-width:400px">
+<div class="sv-room__top"><span class="sv-price">$85 <small>/ night</small></span><span class="sv-pill sv-pill--available">Available</span></div>
+<label class="sv-field" for="p-ci"><span class="sv-field__label">Check-in</span><input class="sv-field__input" id="p-ci" type="text" value="Fri 14 Nov"></label>
+<label class="sv-field sv-field--invalid" for="p-co"><span class="sv-field__label">Check-out</span><input class="sv-field__input" id="p-co" type="text" value="Thu 13 Nov" aria-describedby="p-co-err"><span class="sv-field__error" id="p-co-err"><svg class="sv-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/></svg>Check-out must be after check-in.</span></label>
+<label class="sv-field" for="p-gu"><span class="sv-field__label">Guests</span><select class="sv-field__input" id="p-gu"><option>2 guests</option></select><span class="sv-field__help">Children under 4 stay free.</span></label>
+<div class="sv-booking__lines"><div class="sv-booking__line"><span>$85 x 3 nights</span><span>$255</span></div><div class="sv-booking__line"><span>Breakfast for 2</span><span>Included</span></div></div>
+<div class="sv-booking__total"><span>Total</span><span>$255</span></div>
+<button class="sv-button sv-button--primary sv-button--block" type="button">Check availability</button>
+</form>
+</div></body></html>

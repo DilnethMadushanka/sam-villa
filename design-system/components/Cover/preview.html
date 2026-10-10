@@ -1,0 +1,53 @@
+<!-- @dsCard height=300 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam Villa</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--ground); color:var(--ink); font-family:var(--font-sans); overflow:hidden; }
+  .cover { position:relative; height:300px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:300px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:300px; }
+  .jungle { fill:var(--jungle); }
+  .coral { fill:var(--coral); }
+  .soft { fill:var(--jungle-soft); }
+  .ground { fill:var(--ground); }
+  .words { position:absolute; left:var(--space-12); bottom:var(--space-8); max-width:440px; }
+  .name { margin:0; font-family:var(--font-display); font-weight:600; font-size:104px; line-height:.95; letter-spacing:-.03em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 4px; font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 300" width="480" height="300">
+<!--
+  blocks      jungle arch 168 wide (the brand green, largest), coral arch 112 wide (the single accent), jungle-soft arch 160 wide bleeding off the right edge; all three bleed off the bottom, about 40% of 960x300
+  arrangement a staggered row of villa arches of falling height, space-4 gutters, like a colonnade seen from the garden
+  pattern     a literal motif, from "The villa arch is the signature shape": ten small window arches, ground cut out of the jungle arch and jungle set into the soft one
+  scales      every arch radius is half its width (radius-arch on the top corners only); gutters space-4; window pitch space-12 across, 68 and 68 down
+-->
+<path class="jungle" d="M24 320 V108.0 A84.0 84.0 0 0 1 192 108.0 V320 Z"/>
+<path class="coral" d="M208 320 V176.0 A56.0 56.0 0 0 1 320 176.0 V320 Z"/>
+<path class="soft" d="M336 320 V144.0 A80.0 80.0 0 0 1 496 144.0 V320 Z"/>
+<path class="ground" d="M56 180 V144.0 A16.0 16.0 0 0 1 88 144.0 V180 Z"/>
+<path class="ground" d="M56 248 V212.0 A16.0 16.0 0 0 1 88 212.0 V248 Z"/>
+<path class="ground" d="M56 316 V280.0 A16.0 16.0 0 0 1 88 280.0 V316 Z"/>
+<path class="ground" d="M104 180 V144.0 A16.0 16.0 0 0 1 136 144.0 V180 Z"/>
+<path class="ground" d="M104 248 V212.0 A16.0 16.0 0 0 1 136 212.0 V248 Z"/>
+<path class="ground" d="M104 316 V280.0 A16.0 16.0 0 0 1 136 280.0 V316 Z"/>
+<path class="jungle" d="M376 216 V184.0 A16.0 16.0 0 0 1 408 184.0 V216 Z"/>
+<path class="jungle" d="M376 284 V252.0 A16.0 16.0 0 0 1 408 252.0 V284 Z"/>
+<path class="jungle" d="M432 216 V184.0 A16.0 16.0 0 0 1 464 184.0 V216 Z"/>
+<path class="jungle" d="M432 284 V252.0 A16.0 16.0 0 0 1 464 252.0 V284 Z"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Sam<br>Villa</h1>
+<p class="tag">A garden bed and breakfast. Bright, welcoming, clear about what a stay costs.</p>
+</div>
+</div>
+</body>
+</html>
