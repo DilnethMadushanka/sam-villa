@@ -71,12 +71,13 @@
     var max=document.documentElement.scrollHeight-window.innerHeight;
     prog.style.transform='scaleX('+(max>0?Math.min(y/max,1):0)+')';
     if(header)header.classList.toggle('is-scrolled',y>12);
-    if(bg&&!reduce&&y<window.innerHeight*1.2)bg.style.transform='translate3d(0,'+(y*.18).toFixed(1)+'px,0)';
+    if(bg&&!reduce&&y<window.innerHeight*1.2)bg.style.transform='translate3d(0,'+(y*.12).toFixed(1)+'px,0)';
     if(dock&&stage){dock.classList.toggle('is-on',y>stage.offsetHeight*.7)}
     ticking=false;
   }
   window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
   onScroll();
+  if(stage&&'IntersectionObserver' in window)new IntersectionObserver(function(es){stage.classList.toggle('is-off',!es[0].isIntersecting)}).observe(stage);
 
   /* Scroll reveal with stagger */
   if(!reduce&&'IntersectionObserver' in window){
