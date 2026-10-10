@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sam Villa — Professional Brand Identity & Logo Suite</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--ground, #fafcf9);
+      color: var(--ink, #1d2b25);
+      font-family: var(--font-sans, "Figtree", sans-serif);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 0 80px 0;
+    }
+    
+    /* Top Bar */
+    .brand-top {
+      background: #14241D;
+      color: #FFFFFE;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .brand-top__title {
+      font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-top__badge {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(255,138,110,0.2);
+      color: #FF8A6E;
+      border: 1px solid rgba(255,138,110,0.4);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .brand-top__actions a {
+      color: #FFFFFE;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--jungle, #2e7458);
+      transition: all 0.2s;
+    }
+    .brand-top__actions a:hover {
+      background: #3a8a6a;
+    }
+
+    /* Hero Section */
+    .hero-banner {
+      max-width: 1200px;
+      margin: 48px auto 32px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .hero-banner h1 {
+      font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: #14241D;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .hero-banner p {
+      font-size: 18px;
+      color: #55665D;
+      max-width: 680px;
+      margin: 0 auto 28px;
+    }
+
+    /* Filter Controls */
+    .theme-toggle-bar {
+      display: inline-flex;
+      background: #EEF5F0;
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+      border: 1px solid #DDE7E0;
+    }
+    .theme-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #55665D;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-btn.active {
+      background: #FFFFFE;
+      color: #14241D;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Logo Grid */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 32px;
+      margin-top: 40px;
+    }
+    .logo-card {
+      background: #FFFFFE;
+      border-radius: 20px;
+      border: 1px solid #DDE7E0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(20, 36, 29, 0.05);
+      transition: transform 0.25s, box-shadow 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(20, 36, 29, 0.1);
+    }
+    .logo-card__canvas {
+      padding: 48px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      position: relative;
+      background: #FAFDFB;
+      transition: background 0.3s;
+    }
+    .logo-card__canvas svg, .logo-card__canvas img {
+      max-width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.04));
+    }
+    .logo-card__info {
+      padding: 24px;
+      border-top: 1px solid #EEF5F0;
+      background: #FFFFFE;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .logo-card__tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--jungle, #2e7458);
+      margin-bottom: 6px;
+    }
+    .logo-card__title {
+      font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: #14241D;
+      margin-bottom: 8px;
+    }
+    .logo-card__desc {
+      font-size: 14px;
+      color: #55665D;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .logo-card__actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-action {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid #DDE7E0;
+      background: #FAFDFB;
+      color: #14241D;
+    }
+    .btn-action:hover {
+      background: #EEF5F0;
+      border-color: #2E7458;
+    }
+    .btn-action.btn-primary {
+      background: var(--jungle, #2e7458);
+      color: #FFFFFE;
+      border-color: var(--jungle, #2e7458);
+    }
+    .btn-action.btn-primary:hover {
+      background: #1E503C;
+    }
+
+    /* Real-world Mockups Section */
+    .section-title {
+      font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: #14241D;
+      margin: 64px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .mockup-card {
+      background: #FFFFFE;
+      border-radius: 16px;
+      border: 1px solid #DDE7E0;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .mockup-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #14241D;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Mockup 1: Website Header preview */
+    .mockup-header-bar {
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #DDE7E0;
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .mockup-nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #55665D;
+    }
+    .mockup-btn {
+      background: var(--jungle, #2e7458);
+      color: #FFFFFE;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    /* Mockup 2: Hotel Keycard / Door Tag */
+    .mockup-keycard {
+      background: linear-gradient(145deg, #18382A, #0D2118);
+      color: #FFFFFE;
+      border-radius: 16px;
+      padding: 32px 24px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mockup-keycard::before {
+      content: "";
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255,138,110,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* Mockup 3: Breakfast Menu Card */
+    .mockup-menu {
+      background: #FCFBF7;
+      border: 1px solid #E8DFD0;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    /* Color Swatches */
+    .swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .swatch-card {
+      background: #FFFFFE;
+      border: 1px solid #DDE7E0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .swatch-color {
+      height: 80px;
+      width: 100%;
+    }
+    .swatch-info {
+      padding: 12px;
+      font-size: 12px;
+    }
+    .swatch-info strong {
+      display: block;
+      color: #14241D;
+      font-size: 13px;
+    }
+    .swatch-info code {
+      color: #55665D;
+      font-family: monospace;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #14241D;
+      color: #FFFFFE;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Theme Styles for Canvas */
+    .canvas-jungle {
+      background: #18382B !important;
+    }
+    .canvas-sand {
+      background: #F4EBD9 !important;
+    }
+    .canvas-black {
+      background: #0E1411 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="brand-top">
+    <div class="brand-top__title">
+      <img src="images/favicon.svg" alt="SV Icon" width="28" height="28" style="border-radius:6px">
+      Sam Villa — Brand Identity Suite
+      <span class="brand-top__badge">Production Ready</span>
+    </div>
+    <div class="brand-top__actions">
+      <a href="index.html" target="_blank">View Live Website →</a>
+    </div>
+  </header>
+
+  <!-- Hero Intro -->
+  <section class="hero-banner">
+    <h1>Professional Logo Suite for Sam Villa</h1>
+    <p>Crafted specifically for a luxury boutique garden retreat in Mattegoda, Sri Lanka. Designed for vector scalability, signage, digital applications, and refined print stationery.</p>
+
+    <div class="theme-toggle-bar">
+      <button class="theme-btn active" onclick="setCanvasTheme('light')">Default Light</button>
+      <button class="theme-btn" onclick="setCanvasTheme('jungle')">Jungle Green (#18382B)</button>
+      <button class="theme-btn" onclick="setCanvasTheme('sand')">Linen Sand (#F4EBD9)</button>
+      <button class="theme-btn" onclick="setCanvasTheme('black')">Deep Ink (#0E1411)</button>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- Grid of Logo Concepts -->
+    <div class="logo-grid">
+
+      <!-- Concept A: Botanical Monogram -->
+      <article class="logo-card">
+        <div class="logo-card__canvas" id="canvas-a">
+          <img src="images/logo-botanical-monogram.svg" alt="Concept A: Botanical Monogram Logo" id="logo-img-a">
+        </div>
+        <div class="logo-card__info">
+          <div>
+            <span class="logo-card__tag">Concept A · Flagship Crest</span>
+            <h2 class="logo-card__title">The Botanical Monogram</h2>
+            <p class="logo-card__desc">A bespoke luxury crest intertwining the 'S' and 'V' monograms enclosed in an architectural veranda arch, accented with Ceylon tea foliage, rising sun glow, and balanced serif tracking.</p>
+          </div>
+          <div class="logo-card__actions">
+            <a href="images/logo-botanical-monogram.svg" download="sam-villa-botanical-monogram.svg" class="btn-action btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download SVG
+            </a>
+            <button class="btn-action" onclick="copySvgUrl('images/logo-botanical-monogram.svg')">
+              Copy Asset Path
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Concept B: Veranda Arch Emblem -->
+      <article class="logo-card">
+        <div class="logo-card__canvas" id="canvas-b">
+          <img src="images/logo-veranda-arch.svg" alt="Concept B: Architectural Veranda & Sun Emblem" id="logo-img-b">
+        </div>
+        <div class="logo-card__info">
+          <div>
+            <span class="logo-card__tag">Concept B · Architectural Minimalist</span>
+            <h2 class="logo-card__title">The Veranda &amp; Sun Arch</h2>
+            <p class="logo-card__desc">An architectural emblem inspired by Geoffrey Bawa tropical modernism: sunny morning horizon, garden plunge pool terrace, and palm silhouettes framed within a minimalist arch.</p>
+          </div>
+          <div class="logo-card__actions">
+            <a href="images/logo-veranda-arch.svg" download="sam-villa-veranda-arch.svg" class="btn-action btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download SVG
+            </a>
+            <button class="btn-action" onclick="copySvgUrl('images/logo-veranda-arch.svg')">
+              Copy Asset Path
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Concept C: Horizontal Lockup -->
+      <article class="logo-card">
+        <div class="logo-card__canvas" id="canvas-c">
+          <img src="images/logo-horizontal.svg" alt="Concept C: Horizontal Brand Lockup" style="max-height:80px; width:90%;" id="logo-img-c">
+        </div>
+        <div class="logo-card__info">
+          <div>
+            <span class="logo-card__tag">Concept C · Digital &amp; Header Lockup</span>
+            <h2 class="logo-card__title">The Horizontal Brand Mark</h2>
+            <p class="logo-card__desc">Engineered specifically for website navigation bars, email signatures, letterheads, and mobile viewports. Features the circular SV botanical badge alongside pristine brand typography.</p>
+          </div>
+          <div class="logo-card__actions">
+            <a href="images/logo-horizontal.svg" download="sam-villa-logo-horizontal.svg" class="btn-action btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download SVG
+            </a>
+            <button class="btn-action" onclick="copySvgUrl('images/logo-horizontal.svg')">
+              Copy Asset Path
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Concept D: Icon & Favicon -->
+      <article class="logo-card">
+        <div class="logo-card__canvas" id="canvas-d">
+          <div style="display:flex; gap:24px; align-items:center;">
+            <img src="images/logo-icon.svg" alt="Concept D: App Icon" style="width:96px; height:96px; border-radius:24px; box-shadow:0 8px 24px rgba(0,0,0,0.12)">
+            <img src="images/favicon.svg" alt="Favicon" style="width:48px; height:48px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+          </div>
+        </div>
+        <div class="logo-card__info">
+          <div>
+            <span class="logo-card__tag">Concept D · App Icon &amp; Favicon</span>
+            <h2 class="logo-card__title">The Monogram Squircle</h2>
+            <p class="logo-card__desc">Compact, ultra-high recognition 1:1 icon optimized for iOS/Android home screens, browser tabs, WhatsApp/Instagram business profiles, and the website loading screen.</p>
+          </div>
+          <div class="logo-card__actions">
+            <a href="images/logo-icon.svg" download="sam-villa-icon.svg" class="btn-action btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download SVG
+            </a>
+            <button class="btn-action" onclick="copySvgUrl('images/favicon.svg')">
+              Copy Favicon Path
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Live Context Mockups -->
+    <h2 class="section-title">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E7458" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Real-World Brand Applications
+    </h2>
+
+    <div class="mockup-grid">
+
+      <!-- Mockup 1: Website Navigation Bar -->
+      <div class="mockup-card">
+        <h3>Website Navigation Header</h3>
+        <div class="mockup-header-bar">
+          <div style="display:flex; align-items:center;">
+            <img src="images/logo-horizontal.svg" alt="Sam Villa Logo" style="height:36px; width:auto;">
+          </div>
+          <div class="mockup-nav-links">
+            <span>Rooms</span>
+            <span>Breakfast</span>
+            <span>Around Us</span>
+          </div>
+          <div class="mockup-btn">Book Stay</div>
+        </div>
+        <p style="font-size:12px; color:#55665D; margin-top:12px;">Seamlessly integrates into desktop and mobile top headers with responsive aspect ratio.</p>
+      </div>
+
+      <!-- Mockup 2: Room Keycard -->
+      <div class="mockup-card">
+        <h3>Villa Keycard / Door Hanger</h3>
+        <div class="mockup-keycard">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <img src="images/logo-icon.svg" alt="SV Icon" style="width:40px; height:40px; border-radius:10px;">
+            <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.75;">GARDEN SUITE · NO. 01</span>
+          </div>
+          <div>
+            <h4 style="font-family:var(--font-display); font-size:24px; font-weight:700; letter-spacing:2px; margin-bottom:4px;">SAM VILLA</h4>
+            <p style="font-size:11px; letter-spacing:3px; opacity:0.8; text-transform:uppercase;">MATTEGODA · SRI LANKA</p>
+          </div>
+        </div>
+        <p style="font-size:12px; color:#55665D; margin-top:12px;">Rich emerald and gold metallic foil print on matte cotton keycards.</p>
+      </div>
+
+      <!-- Mockup 3: Breakfast Menu Card -->
+      <div class="mockup-card">
+        <h3>Veranda Breakfast Menu</h3>
+        <div class="mockup-menu">
+          <img src="images/logo-botanical-monogram.svg" alt="Sam Villa Emblem" style="height:76px; margin:0 auto 12px; display:block;">
+          <h4 style="font-family:var(--font-display); font-size:16px; font-weight:700; color:#14241D; letter-spacing:1px; margin-bottom:4px;">MORNING AT THE VERANDA</h4>
+          <p style="font-size:12px; color:#2E7458; font-style:italic; margin-bottom:12px;">Fresh tropical fruits, Ceylon tea &amp; farm eggs</p>
+          <div style="height:1px; width:60px; background:#DDE7E0; margin:12px auto;"></div>
+          <p style="font-size:11px; color:#808E86; letter-spacing:1px;">SERVED 7:30 — 10:00 AM</p>
+        </div>
+        <p style="font-size:12px; color:#55665D; margin-top:12px;">High-resolution crest for embossed fine dining and breakfast stationery.</p>
+      </div>
+
+    </div>
+
+    <!-- Brand Color Palette -->
+    <h2 class="section-title">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E7458" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+      Brand Color System Tokens
+    </h2>
+
+    <div class="swatches-grid">
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#2E7458"></div>
+        <div class="swatch-info">
+          <strong>Jungle Emerald</strong>
+          <code>#2E7458</code>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#14241D"></div>
+        <div class="swatch-info">
+          <strong>Deep Botanical Ink</strong>
+          <code>#14241D</code>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#FF8A6E"></div>
+        <div class="swatch-info">
+          <strong>Warm Terracotta Sun</strong>
+          <code>#FF8A6E</code>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#D4AF37"></div>
+        <div class="swatch-info">
+          <strong>Ceylon Champagne Gold</strong>
+          <code>#D4AF37</code>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#FAFDFB; border-bottom:1px solid #DDE7E0"></div>
+        <div class="swatch-info">
+          <strong>Garden Linen Cream</strong>
+          <code>#FAFDFB</code>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    function setCanvasTheme(theme) {
+      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const canvases = document.querySelectorAll('.logo-card__canvas');
+      canvases.forEach(canvas => {
+        canvas.className = 'logo-card__canvas';
+        if (theme === 'jungle') canvas.classList.add('canvas-jungle');
+        if (theme === 'sand') canvas.classList.add('canvas-sand');
+        if (theme === 'black') canvas.classList.add('canvas-black');
+      });
+    }
+
+    function copySvgUrl(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Copied asset path: ' + url);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+  </script>
+</body>
+</html>

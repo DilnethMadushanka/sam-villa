@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 640" width="100%" height="100%">
+  <defs>
+    <linearGradient id="jungleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E4D3A" />
+      <stop offset="50%" stop-color="#2E7458" />
+      <stop offset="100%" stop-color="#3D9270" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C59B27" />
+      <stop offset="50%" stop-color="#E5C158" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <linearGradient id="warmSun" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF8A6E" />
+      <stop offset="100%" stop-color="#FFA892" />
+    </linearGradient>
+    <filter id="subtleDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#14241D" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Background Base (Transparent by default or soft badge) -->
+  <g id="badge" filter="url(#subtleDrop)">
+    <!-- Architectural Arch Outline Outer -->
+    <path d="M 130 180 A 120 120 0 0 1 370 180 V 350 A 20 20 0 0 1 350 370 H 150 A 20 20 0 0 1 130 350 Z" 
+          fill="#FAFDFB" stroke="#2E7458" stroke-width="3" />
+    
+    <!-- Inner Arch Inset Line -->
+    <path d="M 142 184 A 108 108 0 0 1 358 184 V 344 A 12 12 0 0 1 346 356 H 154 A 12 12 0 0 1 142 344 Z" 
+          fill="none" stroke="#D4AF37" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.85" />
+          
+    <!-- Subtle Rising Sun in Arch -->
+    <circle cx="250" cy="180" r="42" fill="url(#warmSun)" opacity="0.25" />
+    <path d="M 210 180 A 40 40 0 0 1 290 180 Z" fill="url(#warmSun)" opacity="0.45" />
+
+    <!-- Palm / Ceylon Foliage Accents - Left & Right Arch Balance -->
+    <!-- Left Leaf Frond -->
+    <g fill="#2E7458" opacity="0.9">
+      <!-- Central stem curve -->
+      <path d="M 195 270 C 190 230 170 200 152 186 C 166 198 178 220 185 255 Z" />
+      <path d="M 172 198 C 158 194 150 200 150 200 C 156 206 168 210 176 210 Z" />
+      <path d="M 178 216 C 164 216 156 224 156 224 C 164 228 176 228 182 226 Z" />
+      <path d="M 183 234 C 168 238 162 248 162 248 C 172 250 182 246 186 242 Z" />
+    </g>
+
+    <!-- Right Leaf Frond (Mirror Tropical Sprout) -->
+    <g fill="#2E7458" opacity="0.9">
+      <path d="M 305 270 C 310 230 330 200 348 186 C 334 198 322 220 315 255 Z" />
+      <path d="M 328 198 C 342 194 350 200 350 200 C 344 206 332 210 324 210 Z" />
+      <path d="M 322 216 C 336 216 344 224 344 224 C 336 228 324 228 318 226 Z" />
+      <path d="M 317 234 C 332 238 338 248 338 248 C 328 250 318 246 314 242 Z" />
+    </g>
+
+    <!-- The Intertwined "SV" Monogram -->
+    <!-- 'S' Path -->
+    <path d="M 276 195 
+             C 272 182 258 174 242 174 
+             C 222 174 210 186 210 202 
+             C 210 220 226 230 248 238 
+             C 274 248 290 260 290 282 
+             C 290 306 270 322 244 322 
+             C 224 322 208 312 202 296 
+             L 218 290 
+             C 222 302 232 308 244 308 
+             C 258 308 272 298 272 282 
+             C 272 264 254 254 234 246 
+             C 212 236 194 224 194 202 
+             C 194 176 216 160 242 160 
+             C 266 160 286 174 292 190 Z" 
+          fill="url(#jungleGrad)" />
+
+    <!-- 'V' Interlocking Path -->
+    <path d="M 230 224 L 250 288 L 270 224 L 286 224 L 258 308 A 10 10 0 0 1 242 308 L 214 224 Z" 
+          fill="url(#goldGrad)" />
+
+    <!-- Small Star / Starburst Accent Top Arch -->
+    <g transform="translate(250, 88)" fill="#D4AF37">
+      <path d="M 0 -8 Q 1 -1 8 0 Q 1 1 0 8 Q -1 1 -8 0 Q -1 -1 0 -8 Z" />
+    </g>
+
+    <!-- Base Pedestal Line -->
+    <line x1="170" y1="344" x2="330" y2="344" stroke="#2E7458" stroke-width="2" stroke-linecap="round" />
+    <circle cx="250" cy="344" r="3.5" fill="#D4AF37" />
+  </g>
+
+  <!-- Typography: SAM VILLA -->
+  <text x="250" y="435" 
+        text-anchor="middle" 
+        font-family="'Bricolage Grotesque', 'Cinzel', 'Playfair Display', Georgia, serif" 
+        font-size="44" 
+        font-weight="700" 
+        letter-spacing="9" 
+        fill="#1D2B25">SAM VILLA</text>
+
+  <!-- Subtitle: GARDEN BED & BREAKFAST -->
+  <text x="250" y="475" 
+        text-anchor="middle" 
+        font-family="'Figtree', 'Montserrat', -apple-system, sans-serif" 
+        font-size="14.5" 
+        font-weight="600" 
+        letter-spacing="6" 
+        fill="#2E7458">GARDEN BED &amp; BREAKFAST</text>
+
+  <!-- Divider flourishes -->
+  <g transform="translate(250, 498)">
+    <line x1="-90" y1="0" x2="-20" y2="0" stroke="#808E86" stroke-width="0.8" opacity="0.6" />
+    <circle cx="0" cy="0" r="2.5" fill="#FF8A6E" />
+    <line x1="20" y1="0" x2="90" y2="0" stroke="#808E86" stroke-width="0.8" opacity="0.6" />
+  </g>
+
+  <!-- Location Tag -->
+  <text x="250" y="530" 
+        text-anchor="middle" 
+        font-family="'Figtree', -apple-system, sans-serif" 
+        font-size="12" 
+        font-weight="500" 
+        letter-spacing="4" 
+        fill="#55665D">MATTEGODA · SRI LANKA</text>
+</svg>
