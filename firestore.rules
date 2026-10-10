@@ -1,0 +1,104 @@
+rules_version = '2';
+
+// Sam Villa Firestore rules.
+// Public visitors can: read rooms, published reviews and site content; CREATE one booking or message (strictly validated).
+// Public visitors can never: read, change or delete bookings/messages, or write anything else.
+// Admins are accounts whose uid has a document at /admins/{uid} (created by hand in the Firebase console, never from the app).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function str(v, lo, hi) { return v is string && v.size() >= lo && v.size() <= hi; }
+    function isoDate(v) { return str(v, 10, 10) && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'); }
+    function mail(v) { return str(v, 5, 120) && v.matches('^[^@ ]+@[^@ ]+\\.[^@ ]+$'); }
+
+    function validBooking(d) {
+      return d.keys().hasOnly(['name','email','phone','room','checkIn','checkOut','guests','nights','total','notes','status','createdAt'])
+        && d.keys().hasAll(['name','email','phone','room','checkIn','checkOut','guests','nights','total','notes','status','createdAt'])
+        && str(d.name, 2, 100) && mail(d.email) && str(d.phone, 0, 30) && str(d.room, 1, 60)
+        && isoDate(d.checkIn) && isoDate(d.checkOut)
+        && d.guests is int && d.guests >= 1 && d.guests <= 10
+        && d.nights is int && d.nights >= 1 && d.nights <= 60
+        && d.total is number && d.total >= 0 && d.total <= 1000000
+        && str(d.notes, 0, 500)
+        && d.status == 'new'
+        && d.createdAt == request.time;
+    }
+
+    function validMessage(d) {
+      return d.keys().hasOnly(['name','email','message','status','createdAt'])
+        && d.keys().hasAll(['name','email','message','status','createdAt'])
+        && str(d.name, 2, 100) && mail(d.email) && str(d.message, 5, 2000)
+        && d.status == 'new'
+        && d.createdAt == request.time;
+    }
+
+    function validRoom(d) {
+      return d.keys().hasOnly(['name','rate','sleeps','status','note'])
+        && d.keys().hasAll(['name','rate','sleeps','status'])
+        && str(d.name, 1, 60)
+        && d.rate is number && d.rate >= 1 && d.rate <= 100000
+        && d.sleeps is int && d.sleeps >= 1 && d.sleeps <= 12
+        && d.status in ['available', 'few', 'booked']
+        && (!('note' in d) || str(d.note, 0, 80));
+    }
+
+    function validReview(d) {
+      return d.keys().hasOnly(['author','detail','text','stars','published','createdAt'])
+        && d.keys().hasAll(['author','text','stars','published'])
+        && str(d.author, 1, 80) && (!('detail' in d) || str(d.detail, 0, 120))
+        && str(d.text, 5, 400)
+        && d.stars is int && d.stars >= 1 && d.stars <= 5
+        && d.published is bool;
+    }
+
+    function validContent(d) {
+      return d.keys().hasOnly(['heroLede','phone','email','whatsapp'])
+        && (!('heroLede' in d) || str(d.heroLede, 0, 200))
+        && (!('phone' in d) || str(d.phone, 0, 30))
+        && (!('whatsapp' in d) || str(d.whatsapp, 0, 30))
+        && (!('email' in d) || str(d.email, 0, 120));
+    }
+
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;   // lets the app check "am I an admin"
+      allow list, write: if false;                            // admins are added only in the console
+    }
+
+    match /rooms/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validRoom(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /reviews/{id} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create, update: if isAdmin() && validReview(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /content/{id} {
+      allow read: if true;
+      allow write: if isAdmin() && id == 'site' && validContent(request.resource.data);
+    }
+
+    match /bookings/{id} {
+      allow create: if validBooking(request.resource.data);
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+                    && request.resource.data.status in ['new', 'confirmed', 'cancelled'];
+    }
+
+    match /messages/{id} {
+      allow create: if validMessage(request.resource.data);
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+                    && request.resource.data.status in ['new', 'read'];
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

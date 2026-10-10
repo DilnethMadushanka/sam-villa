@@ -6,6 +6,7 @@
   var form=document.getElementById('book'),msg=document.getElementById('bk-msg');
   function nights(){var n=Math.round((new Date(co.value)-new Date(ci.value))/864e5);return n>0?n:0}
   function guests(){return parseInt(gu.value,10)||1}
+  function esc(v){return String(v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function money(n){return '$'+n.toLocaleString('en-US')}
   var rooms=Array.prototype.slice.call(document.querySelectorAll('[data-room]'));
   function info(el){return{name:el.dataset.room,rate:+el.dataset.rate,sleeps:+el.dataset.sleeps,status:el.dataset.status,bed:el.dataset.bed,img:el.dataset.img,desc:el.dataset.desc}}
@@ -21,12 +22,13 @@
       var r=info(el),fits=g<=r.sleeps,open=r.status!=='booked'&&fits;
       var meta=r.status==='booked'?'Fully booked for these dates':!fits?'Sleeps '+r.sleeps+', too small for '+g:r.status==='few'?'Few nights left':'Available';
       var row=document.createElement('div');row.className='sv-result'+(open?'':' is-off');row.style.setProperty('--r',i);
-      row.innerHTML='<img src="'+r.img+'" alt="" loading="lazy"><div><div class="sv-result__name">'+r.name+'</div><div class="sv-result__meta">'+meta+'</div></div>'+
+      row.innerHTML='<img src="'+esc(r.img)+'" alt="" loading="lazy"><div><div class="sv-result__name">'+esc(r.name)+'</div><div class="sv-result__meta">'+meta+'</div></div>'+
         (open?'<div class="sv-result__go"><b>'+money(r.rate*n)+'</b><button class="sv-button sv-button--primary" type="button">Reserve</button></div>':'');
       if(open)row.querySelector('button').addEventListener('click',function(){
         results.querySelectorAll('.is-picked').forEach(function(x){x.classList.remove('is-picked')});
         row.classList.add('is-picked');
-        msg.textContent=r.name+' selected, '+money(r.rate*n)+' total. This preview does not send bookings yet.';
+        msg.textContent=r.name+' selected, '+money(r.rate*n)+' total.';
+        document.dispatchEvent(new CustomEvent('sv:reserve',{detail:{room:r.name,rate:r.rate,nights:n,total:r.rate*n,checkIn:ci.value,checkOut:co.value,guests:g}}));
       });
       results.appendChild(row);
     });
@@ -45,7 +47,7 @@
     var pill=document.getElementById('rd-pill');
     pill.className='sv-pill '+(r.status==='booked'?'sv-pill--booked':r.status==='few'?'sv-pill--few':'sv-pill--available');
     pill.textContent=r.status==='booked'?'Fully booked':r.status==='few'?'Few nights left':'Available';
-    document.getElementById('rd-facts').innerHTML='<li>'+r.bed+'</li><li>Sleeps '+r.sleeps+'</li><li>Own bathroom</li><li>Garden door</li>';
+    document.getElementById('rd-facts').innerHTML='<li>'+esc(r.bed)+'</li><li>Sleeps '+Number(r.sleeps)+'</li><li>Own bathroom</li><li>Garden door</li>';
     document.getElementById('rd-price').innerHTML=money(r.rate)+' <small>/ night, sample rate</small>';
     var n=nights();
     document.getElementById('rd-total').textContent=n?n+(n===1?' night':' nights')+' = '+money(r.rate*n):'';

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Villa Admin</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="ad">
+
+<main class="ad-login" id="login-view" hidden>
+  <form class="ad-card ad-login__card" id="login-form" autocomplete="on" novalidate>
+    <span class="ad-mark" aria-hidden="true">SV</span>
+    <h1 class="ad-h">Admin sign in</h1>
+    <p class="ad-muted">Sam Villa staff only.</p>
+    <label class="ad-field"><span>Email</span><input id="login-email" type="email" autocomplete="username" required maxlength="120"></label>
+    <label class="ad-field"><span>Password</span><input id="login-pass" type="password" autocomplete="current-password" required maxlength="200"></label>
+    <p class="ad-error" id="login-error" role="alert" hidden></p>
+    <button class="ad-btn ad-btn--primary" id="login-btn" type="submit">Sign in</button>
+  </form>
+</main>
+
+<main class="ad-login" id="setup-view" hidden>
+  <div class="ad-card ad-login__card">
+    <span class="ad-mark" aria-hidden="true">SV</span>
+    <h1 class="ad-h">Backend not connected</h1>
+    <p class="ad-muted">Add your Firebase web config to <code>js/firebase-config.js</code>, then reload. Full steps are in <code>ADMIN.md</code>.</p>
+  </div>
+</main>
+
+<div id="dash-view" hidden>
+  <header class="ad-top">
+    <div class="ad-top__in">
+      <span class="ad-brand"><span class="ad-mark" aria-hidden="true">SV</span>Sam Villa Admin</span>
+      <nav class="ad-tabs" id="tabs" aria-label="Sections" role="tablist">
+        <button class="ad-tab is-on" type="button" role="tab" data-tab="bookings">Bookings <span class="ad-badge" id="bk-count" hidden></span></button>
+        <button class="ad-tab" type="button" role="tab" data-tab="messages">Messages <span class="ad-badge" id="ms-count" hidden></span></button>
+        <button class="ad-tab" type="button" role="tab" data-tab="rooms">Rooms and rates</button>
+        <button class="ad-tab" type="button" role="tab" data-tab="reviews">Reviews</button>
+        <button class="ad-tab" type="button" role="tab" data-tab="content">Content</button>
+      </nav>
+      <div class="ad-top__end"><span class="ad-muted ad-who" id="who"></span><button class="ad-btn" id="logout" type="button">Sign out</button></div>
+    </div>
+  </header>
+
+  <main class="ad-main">
+    <p class="ad-toast" id="toast" role="status" aria-live="polite" hidden></p>
+    <section class="ad-panel" id="panel-bookings" role="tabpanel"></section>
+    <section class="ad-panel" id="panel-messages" role="tabpanel" hidden></section>
+    <section class="ad-panel" id="panel-rooms" role="tabpanel" hidden></section>
+    <section class="ad-panel" id="panel-reviews" role="tabpanel" hidden></section>
+    <section class="ad-panel" id="panel-content" role="tabpanel" hidden></section>
+  </main>
+</div>
+
+<script src="../js/firebase-config.js"></script>
+<script src="../js/fb.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
