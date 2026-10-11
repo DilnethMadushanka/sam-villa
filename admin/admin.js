@@ -116,7 +116,10 @@
     document.querySelectorAll('.ad-tab').forEach(function (t) { var on = t.dataset.tab === tab; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', String(on)); });
     document.querySelectorAll('.ad-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + tab; });
     window.scrollTo(0, 0);
+    if (tab === 'overview') renderRevenue();
   }
+  var resizeT;
+  window.addEventListener('resize', function () { clearTimeout(resizeT); resizeT = setTimeout(renderRevenue, 150); });
 
   function build() { overview(); bookings(); messages(); rooms(); reviews(); content(); }
   function head(p, title, sub, extra) {
@@ -129,8 +132,17 @@
     var p = $('panel-overview');
     var hr = new Date().getHours();
     head(p, (hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening'), new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }));
-    ov = { stats: h('div', { class: 'ad-stats' }), arrivals: h('div', { class: 'ad-list' }), recent: h('div', { class: 'ad-list' }), rooms: h('div', { class: 'ad-bars' }) };
+    ov = { stats: h('div', { class: 'ad-stats' }), arrivals: h('div', { class: 'ad-list' }), recent: h('div', { class: 'ad-list' }), rooms: h('div', { class: 'ad-bars' }), rev: h('div', { class: 'ad-rev' }), revHead: h('div', { class: 'ad-rev__head' }), range: 6 };
+    var ranges = h('div', { class: 'ad-chips', role: 'group', 'aria-label': 'Chart range' });
+    [6, 12].forEach(function (n) {
+      var b = h('button', { class: 'ad-chip' + (n === ov.range ? ' is-on' : ''), type: 'button', 'aria-pressed': String(n === ov.range), text: n + ' months' });
+      b.addEventListener('click', function () { ov.range = n; ranges.querySelectorAll('.ad-chip').forEach(function (c) { c.classList.toggle('is-on', c === b); c.setAttribute('aria-pressed', String(c === b)); }); renderRevenue(); });
+      ranges.appendChild(b);
+    });
     p.appendChild(ov.stats);
+    p.appendChild(h('div', { class: 'ad-card' },
+      h('div', { class: 'ad-bar' }, h('div', { class: 'ad-bar__t' }, h('h2', { class: 'ad-h2', text: 'Monthly revenue' }), h('p', { class: 'ad-muted ad-small', text: 'Paid bookings, by month of stay' })), ranges),
+      ov.revHead, ov.rev));
     p.appendChild(h('div', { class: 'ad-cols' },
       h('div', { class: 'ad-card' }, h('div', { class: 'ad-bar' }, h('h2', { class: 'ad-h2', text: 'Upcoming arrivals' }), h('button', { class: 'ad-btn ad-btn--sm', type: 'button', 'data-tab': 'bookings', text: 'All bookings' })), ov.arrivals),
       h('div', { class: 'ad-card' }, h('div', { class: 'ad-bar' }, h('h2', { class: 'ad-h2', text: 'Latest messages' }), h('button', { class: 'ad-btn ad-btn--sm', type: 'button', 'data-tab': 'messages', text: 'Inbox' })), ov.recent)));
@@ -173,6 +185,7 @@
         h('span', { class: 'ad-item__b' }, h('strong', { text: m.name }), h('span', { class: 'ad-sub ad-clip', text: m.message })),
         h('span', { class: 'ad-sub', text: m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '' })));
     });
+    renderRevenue();
     clear(ov.rooms);
     var by = {}; live.forEach(function (b) { by[b.room] = (by[b.room] || 0) + 1; });
     var names = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }), max = Math.max.apply(null, names.map(function (n) { return by[n]; }).concat(1));
@@ -181,6 +194,73 @@
       var bar = h('span', { class: 'ad-bars__fill' }); bar.style.width = (by[n] / max * 100) + '%';
       ov.rooms.appendChild(h('div', { class: 'ad-bars__row' }, h('span', { class: 'ad-bars__l', text: n }), h('span', { class: 'ad-bars__track' }, bar), h('b', { text: String(by[n]) })));
     });
+  }
+
+  /* ---------- monthly revenue chart (single series: paid totals by check-in month) ---------- */
+  var SVG = 'http://www.w3.org/2000/svg';
+  function sv(tag, attrs, text) {
+    var el = document.createElementNS(SVG, tag);
+    Object.keys(attrs || {}).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    if (text != null) el.textContent = text;
+    return el;
+  }
+  function short(n) { return n >= 1000 ? '$' + (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : '$' + n; }
+  function niceMax(v) { if (v <= 0) return 100; var e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; }
+  function renderRevenue() {
+    if (!ov) return;
+    var now = new Date(), months = [];
+    for (var i = ov.range - 1; i >= 0; i--) {
+      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ key: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'), label: d.toLocaleDateString(undefined, { month: 'short' }), full: d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }), total: 0, count: 0 });
+    }
+    var byKey = {}; months.forEach(function (m) { byKey[m.key] = m; });
+    state.bookings.forEach(function (b) {
+      var m = b.status === 'paid' && byKey[(b.checkIn || '').slice(0, 7)];
+      if (m) { m.total += b.total || 0; m.count++; }
+    });
+    var cur = months[months.length - 1], prev = months[months.length - 2], sum = months.reduce(function (n, m) { return n + m.total; }, 0);
+    var delta = prev.total ? Math.round((cur.total - prev.total) / prev.total * 100) : null;
+    clear(ov.revHead);
+    add(ov.revHead, [
+      h('div', {}, h('span', { class: 'ad-stat__l', text: 'This month' }), h('strong', { class: 'ad-rev__big', text: money(cur.total) }),
+        h('span', { class: 'ad-delta' + (delta == null ? '' : delta >= 0 ? ' is-up' : ' is-down'), text: delta == null ? 'No paid stays last month' : (delta >= 0 ? '▲ ' : '▼ ') + Math.abs(delta) + '% vs ' + prev.label })),
+      h('div', {}, h('span', { class: 'ad-stat__l', text: 'Last ' + ov.range + ' months' }), h('strong', { class: 'ad-rev__mid', text: money(sum) }), h('span', { class: 'ad-sub', text: 'Average ' + money(Math.round(sum / ov.range)) + ' a month' }))]);
+
+    clear(ov.rev);
+    var W = Math.max(300, Math.round(ov.rev.clientWidth) || 720), H = W < 500 ? 200 : 240, L = 48, R = 8, T = 12, B = 28, iw = W - L - R, ih = H - T - B;
+    var max = niceMax(Math.max.apply(null, months.map(function (m) { return m.total; }))), step = iw / months.length, bw = Math.min(44, step * (W < 500 ? 0.62 : 0.56));
+    var svg = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'ad-chart', role: 'img', 'aria-label': 'Monthly paid revenue, last ' + ov.range + ' months' });
+    [0, 0.5, 1].forEach(function (f) {
+      var y = T + ih - f * ih;
+      svg.appendChild(sv('line', { x1: L, x2: W - R, y1: y, y2: y, class: f ? 'ad-chart__grid' : 'ad-chart__base' }));
+      svg.appendChild(sv('text', { x: L - 8, y: y + 4, 'text-anchor': 'end', class: 'ad-chart__tick' }, short(max * f)));
+    });
+    var tip = h('div', { class: 'ad-tip', hidden: true });
+    months.forEach(function (m, i) {
+      var x = L + i * step + (step - bw) / 2, bh = m.total / max * ih, y = T + ih - bh, cx = x + bw / 2;
+      var g = sv('g', { class: 'ad-chart__col' + (m === cur ? ' is-cur' : ''), tabindex: '0', 'aria-label': m.full + ': ' + money(m.total) + ', ' + m.count + ' paid stays' });
+      g.appendChild(sv('rect', { x: L + i * step, y: T, width: step, height: ih, class: 'ad-chart__hit' }));
+      if (bh > 0) {
+        var r = Math.min(4, bh, bw / 2);   /* rounded data end, square on the baseline */
+        g.appendChild(sv('path', { class: 'ad-chart__bar', d: 'M' + x + ',' + (T + ih) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + bw - r) + 'Q' + (x + bw) + ',' + y + ' ' + (x + bw) + ',' + (y + r) + 'V' + (T + ih) + 'Z' }));
+      }
+      if (m === cur && m.total) g.appendChild(sv('text', { x: cx, y: y - 6, 'text-anchor': 'middle', class: 'ad-chart__val' }, short(m.total)));
+      g.appendChild(sv('text', { x: cx, y: H - 8, 'text-anchor': 'middle', class: 'ad-chart__tick' + (m === cur ? ' is-cur' : '') }, m.label));
+      function show() {
+        clear(tip); add(tip, [h('strong', { text: m.full }), h('span', { text: money(m.total) + ' · ' + m.count + (m.count === 1 ? ' paid stay' : ' paid stays') })]);
+        tip.hidden = false;
+        var box = ov.rev.getBoundingClientRect(), k = box.width / W;
+        tip.style.left = Math.max(0, Math.min(box.width - tip.offsetWidth, cx * k - tip.offsetWidth / 2)) + 'px';
+        tip.style.top = Math.max(0, (T + ih - bh) * k - tip.offsetHeight - 10) + 'px';
+      }
+      g.addEventListener('pointerenter', show); g.addEventListener('focus', show);
+      g.addEventListener('pointerleave', function () { tip.hidden = true; }); g.addEventListener('blur', function () { tip.hidden = true; });
+      svg.appendChild(g);
+    });
+    ov.rev.appendChild(svg); ov.rev.appendChild(tip);
+    /* same numbers as a table, for screen readers */
+    ov.rev.appendChild(h('table', { class: 'ad-sr' }, h('caption', { text: 'Monthly paid revenue' }),
+      h('tbody', {}, months.map(function (m) { return h('tr', {}, h('th', { text: m.full }), h('td', { text: money(m.total) })); }))));
   }
 
   /* ---------- CSV export ---------- */
@@ -256,13 +336,13 @@
         var rc = h('button', { class: 'ad-btn ad-btn--sm', type: 'button', text: 'Email receipt' });
         rc.addEventListener('click', function () { sendReceipt(d.id, b, rc); });
         body.appendChild(h('tr', { class: b.status === 'new' ? 'is-new' : '' },
-          h('td', {}, h('div', { class: 'ad-guest' }, h('span', { class: 'ad-avatar', text: (b.name || '?').charAt(0).toUpperCase() }), h('span', {},
+          h('td', { class: 'ad-td-main' }, h('div', { class: 'ad-guest' }, h('span', { class: 'ad-avatar', text: (b.name || '?').charAt(0).toUpperCase() }), h('span', {},
             h('strong', { text: b.name }), h('span', { class: 'ad-sub', text: b.email }), h('span', { class: 'ad-sub', text: [b.phone, 'Ref ' + d.id.slice(0, 8).toUpperCase(), fmt(b.createdAt)].filter(Boolean).join(' · ') }),
             b.notes ? h('span', { class: 'ad-sub ad-msg ad-note', text: b.notes }) : null))),
-          h('td', {}, h('span', { class: 'ad-roomtag' + (b.room === 'Whole Villa' ? ' is-villa' : ''), text: b.room })),
-          h('td', {}, day(b.checkIn) + ' → ' + day(b.checkOut), h('span', { class: 'ad-sub', text: b.nights + (b.nights === 1 ? ' night, ' : ' nights, ') + b.guests + (b.guests === 1 ? ' guest' : ' guests') })),
-          h('td', {}, h('strong', { text: money(b.total) })),
-          h('td', {}, sel), h('td', {}, h('div', { class: 'ad-actions' }, rc, del))));
+          h('td', { 'data-label': 'Room' }, h('span', { class: 'ad-roomtag' + (b.room === 'Whole Villa' ? ' is-villa' : ''), text: b.room })),
+          h('td', { 'data-label': 'Stay' }, day(b.checkIn) + ' → ' + day(b.checkOut), h('span', { class: 'ad-sub', text: b.nights + (b.nights === 1 ? ' night, ' : ' nights, ') + b.guests + (b.guests === 1 ? ' guest' : ' guests') })),
+          h('td', { 'data-label': 'Total' }, h('strong', { text: money(b.total) })),
+          h('td', { 'data-label': 'Status' }, sel), h('td', { class: 'ad-td-actions' }, h('div', { class: 'ad-actions' }, rc, del))));
       });
     }
     var q = fs.query(fs.collection(fb.db, 'bookings'), fs.orderBy('createdAt', 'desc'), fs.limit(500));
@@ -294,11 +374,11 @@
         var del = h('button', { class: 'ad-btn ad-btn--danger ad-btn--sm', type: 'button', text: 'Delete' });
         del.addEventListener('click', function () { if (confirm('Delete this message permanently?')) fs.deleteDoc(fs.doc(fb.db, 'messages', d.id)).catch(fail); });
         body.appendChild(h('tr', { class: m.status === 'new' ? 'is-new' : '' },
-          h('td', { text: fmt(m.createdAt) }),
-          h('td', {}, h('strong', { text: m.name }), h('span', { class: 'ad-sub', text: m.email })),
-          h('td', { class: 'ad-msg', text: m.message }),
-          h('td', {}, pill(m.status)),
-          h('td', {}, h('div', { class: 'ad-actions' }, reply, toggle, del))));
+          h('td', { 'data-label': 'Received', text: fmt(m.createdAt) }),
+          h('td', { class: 'ad-td-main' }, h('strong', { text: m.name }), h('span', { class: 'ad-sub', text: m.email })),
+          h('td', { class: 'ad-msg ad-td-full', text: m.message }),
+          h('td', { 'data-label': 'Status' }, pill(m.status)),
+          h('td', { class: 'ad-td-actions' }, h('div', { class: 'ad-actions' }, reply, toggle, del))));
       });
       var c = $('ms-count'); c.textContent = fresh; c.hidden = !fresh;
       renderOverview();
