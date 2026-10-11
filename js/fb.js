@@ -14,7 +14,7 @@
       var out = { app: app, fs: m[1], db: m[1].getFirestore(app) };
       if (needAuth) { out.au = m[2]; out.auth = m[2].getAuth(app); }
       return out;
-    }).catch(function () { return null; });
+    }).catch(function (e) { console.error('Firebase failed to load', e); window.svFirebaseError = e || true; return null; });
     return cache[key];
   };
 })();

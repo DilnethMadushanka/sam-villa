@@ -298,13 +298,32 @@
     });
   }
 
-  /* ---------- start ---------- */
+  /* ---------- start ----------
+     The sign-in card shows straight away with "Connecting...", so the page is never blank. If Firebase cannot
+     load (offline, or a browser extension blocking www.gstatic.com / googleapis.com), the card says so. */
+  var ready = false;
+  function loadFailed() {
+    if (ready) return;
+    show('login-view');
+    $('login-status').hidden = true;
+    var e = $('login-error');
+    e.textContent = 'Could not reach the sign-in service. Check your connection and reload. If you use an ad blocker or privacy extension, allow this site and reload.';
+    e.hidden = false;
+  }
+  var loadT = setTimeout(loadFailed, 12000);
   window.svFirebase({ auth: true }).then(function (r) {
-    if (!r) { show('setup-view'); return; }
+    if (!r) {
+      clearTimeout(loadT);
+      if (window.svFirebaseError) loadFailed(); else show('setup-view');
+      return;
+    }
     fb = r;
     bindLogin(); bindShell();
     fb.au.setPersistence(fb.auth, fb.au.browserSessionPersistence).catch(function () {}).then(function () {
-      fb.au.onAuthStateChanged(fb.auth, onUser);
+      fb.au.onAuthStateChanged(fb.auth, function (user) {
+        if (!ready) { ready = true; clearTimeout(loadT); $('login-status').hidden = true; $('login-btn').disabled = false; }
+        onUser(user);
+      });
     });
   });
 })();
