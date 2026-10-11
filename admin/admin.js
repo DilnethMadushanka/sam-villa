@@ -36,9 +36,12 @@
   }
   function fmt(ts) { try { return ts && ts.toDate ? ts.toDate().toLocaleString() : ''; } catch (e) { return ''; } }
   function money(n) { return '$' + Number(n || 0).toLocaleString('en-US'); }
+  function day(iso) { try { return new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return iso; } }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function pill(status) { return h('span', { class: 'ad-pill ad-pill--' + String(status).replace(/[^a-z]/g, ''), text: status }); }
 
   var fb = null, unsubs = [], idleT = null;
+  var state = { bookings: [], messages: [] };   /* latest snapshots, shared by Overview and the lists */
 
   /* ---------- sign-in with lockout ---------- */
   function lockInfo() {
@@ -88,6 +91,7 @@
         return;
       }
       $('who').textContent = user.email || '';
+      $('who-init').textContent = (user.email || 'A').charAt(0).toUpperCase();
       show('dash-view'); armIdle(); build();
     }).catch(function () {
       fb.au.signOut(fb.auth); show('login-view');
@@ -96,20 +100,97 @@
   }
   function stop() {
     unsubs.forEach(function (f) { try { f(); } catch (e) {} }); unsubs = [];
-    ['bookings', 'messages', 'rooms', 'reviews', 'content'].forEach(function (p) { clear($('panel-' + p)); });
+    ['overview', 'bookings', 'messages', 'rooms', 'reviews', 'content'].forEach(function (p) { clear($('panel-' + p)); });
+    state = { bookings: [], messages: [] }; ov = null;
+    go('overview');
     clearTimeout(idleT);
   }
 
   function bindShell() {
     $('logout').addEventListener('click', function () { fb.au.signOut(fb.auth); });
-    $('tabs').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-tab]'); if (!b) return;
-      document.querySelectorAll('.ad-tab').forEach(function (t) { t.classList.toggle('is-on', t === b); t.setAttribute('aria-selected', String(t === b)); });
-      document.querySelectorAll('.ad-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + b.dataset.tab; });
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab);
+    });
+  }
+  function go(tab) {
+    document.querySelectorAll('.ad-tab').forEach(function (t) { var on = t.dataset.tab === tab; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', String(on)); });
+    document.querySelectorAll('.ad-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + tab; });
+    window.scrollTo(0, 0);
+  }
+
+  function build() { overview(); bookings(); messages(); rooms(); reviews(); content(); }
+  function head(p, title, sub, extra) {
+    p.appendChild(h('div', { class: 'ad-bar' }, h('div', { class: 'ad-bar__t' }, h('h1', { class: 'ad-h', text: title }), sub ? h('p', { class: 'ad-muted', text: sub }) : null), extra || null));
+  }
+
+  /* ---------- overview ---------- */
+  var ov = null;
+  function overview() {
+    var p = $('panel-overview');
+    var hr = new Date().getHours();
+    head(p, (hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening'), new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }));
+    ov = { stats: h('div', { class: 'ad-stats' }), arrivals: h('div', { class: 'ad-list' }), recent: h('div', { class: 'ad-list' }), rooms: h('div', { class: 'ad-bars' }) };
+    p.appendChild(ov.stats);
+    p.appendChild(h('div', { class: 'ad-cols' },
+      h('div', { class: 'ad-card' }, h('div', { class: 'ad-bar' }, h('h2', { class: 'ad-h2', text: 'Upcoming arrivals' }), h('button', { class: 'ad-btn ad-btn--sm', type: 'button', 'data-tab': 'bookings', text: 'All bookings' })), ov.arrivals),
+      h('div', { class: 'ad-card' }, h('div', { class: 'ad-bar' }, h('h2', { class: 'ad-h2', text: 'Latest messages' }), h('button', { class: 'ad-btn ad-btn--sm', type: 'button', 'data-tab': 'messages', text: 'Inbox' })), ov.recent)));
+    p.appendChild(h('div', { class: 'ad-card' }, h('h2', { class: 'ad-h2', text: 'Bookings by room' }), ov.rooms));
+    renderOverview();
+  }
+  function stat(label, value, note, tone, tab) {
+    return h('button', { class: 'ad-stat' + (tone ? ' ad-stat--' + tone : ''), type: 'button', 'data-tab': tab },
+      h('span', { class: 'ad-stat__l', text: label }), h('strong', { class: 'ad-stat__v', text: String(value) }), h('span', { class: 'ad-stat__n', text: note }));
+  }
+  function renderOverview() {
+    if (!ov) return;
+    var B = state.bookings, M = state.messages, t = today(), month = t.slice(0, 7);
+    var live = B.filter(function (b) { return b.status !== 'cancelled'; });
+    var fresh = B.filter(function (b) { return b.status === 'new'; }).length;
+    var upcoming = live.filter(function (b) { return b.checkOut >= t; }).sort(function (a, b) { return a.checkIn < b.checkIn ? -1 : 1; });
+    var inHouse = live.filter(function (b) { return b.checkIn <= t && b.checkOut > t; }).length;
+    var paid = B.filter(function (b) { return b.status === 'paid' && (b.checkIn || '').slice(0, 7) === month; }).reduce(function (n, b) { return n + (b.total || 0); }, 0);
+    var unread = M.filter(function (m) { return m.status === 'new'; }).length;
+    clear(ov.stats);
+    add(ov.stats, [
+      stat('New requests', fresh, fresh ? 'Waiting for you' : 'All caught up', fresh ? 'hot' : '', 'bookings'),
+      stat('Upcoming stays', upcoming.length, inHouse + ' in house today', '', 'bookings'),
+      stat('Paid this month', money(paid), 'Stays starting in ' + new Date().toLocaleDateString(undefined, { month: 'long' }), 'good', 'bookings'),
+      stat('Unread messages', unread, M.length + ' in total', unread ? 'hot' : '', 'messages')]);
+    clear(ov.arrivals);
+    if (!upcoming.length) ov.arrivals.appendChild(h('p', { class: 'ad-empty', text: 'No upcoming stays.' }));
+    upcoming.slice(0, 6).forEach(function (b) {
+      var d = new Date(b.checkIn + 'T00:00:00');
+      ov.arrivals.appendChild(h('div', { class: 'ad-item' },
+        h('span', { class: 'ad-date' }, h('b', { text: String(d.getDate()) }), d.toLocaleDateString(undefined, { month: 'short' })),
+        h('span', { class: 'ad-item__b' }, h('strong', { text: b.name }), h('span', { class: 'ad-sub', text: b.room + ' · ' + b.nights + (b.nights === 1 ? ' night' : ' nights') + ' · ' + b.guests + ' guests' })),
+        pill(b.status)));
+    });
+    clear(ov.recent);
+    if (!M.length) ov.recent.appendChild(h('p', { class: 'ad-empty', text: 'No messages yet.' }));
+    M.slice(0, 5).forEach(function (m) {
+      ov.recent.appendChild(h('div', { class: 'ad-item' + (m.status === 'new' ? ' is-new' : '') },
+        h('span', { class: 'ad-avatar', text: (m.name || '?').charAt(0).toUpperCase() }),
+        h('span', { class: 'ad-item__b' }, h('strong', { text: m.name }), h('span', { class: 'ad-sub ad-clip', text: m.message })),
+        h('span', { class: 'ad-sub', text: m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '' })));
+    });
+    clear(ov.rooms);
+    var by = {}; live.forEach(function (b) { by[b.room] = (by[b.room] || 0) + 1; });
+    var names = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }), max = Math.max.apply(null, names.map(function (n) { return by[n]; }).concat(1));
+    if (!names.length) ov.rooms.appendChild(h('p', { class: 'ad-empty', text: 'No bookings yet.' }));
+    names.forEach(function (n) {
+      var bar = h('span', { class: 'ad-bars__fill' }); bar.style.width = (by[n] / max * 100) + '%';
+      ov.rooms.appendChild(h('div', { class: 'ad-bars__row' }, h('span', { class: 'ad-bars__l', text: n }), h('span', { class: 'ad-bars__track' }, bar), h('b', { text: String(by[n]) })));
     });
   }
 
-  function build() { bookings(); messages(); rooms(); reviews(); content(); }
+  /* ---------- CSV export ---------- */
+  function csv(rows, name) {
+    var text = rows.map(function (r) { return r.map(function (v) { v = v == null ? '' : String(v); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','); }).join('\r\n');
+    var url = URL.createObjectURL(new Blob(['\ufeff' + text], { type: 'text/csv' }));
+    var a = h('a', { href: url, download: name });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
   function fail(e) { toast((e && e.code === 'permission-denied') ? 'Not allowed.' : 'Something went wrong. Try again.', true); }
 
   /* ---------- receipt email (EmailJS free plan) ---------- */
@@ -129,33 +210,68 @@
   }
 
   /* ---------- bookings ---------- */
+  var STATUSES = ['new', 'confirmed', 'paid', 'cancelled'];
   function bookings() {
-    var fs = fb.fs, p = $('panel-bookings');
-    var body = h('tbody');
-    p.appendChild(h('div', { class: 'ad-bar' }, h('h1', { class: 'ad-h', text: 'Bookings' }), h('p', { class: 'ad-muted', text: 'Newest first. Change a status to confirm or cancel.' })));
+    var fs = fb.fs, p = $('panel-bookings'), filter = 'all', term = '', docs = [];
+    var body = h('tbody'), count = h('span', { class: 'ad-muted' });
+    var search = h('input', { class: 'ad-search', type: 'search', placeholder: 'Search name, email, room or reference', 'aria-label': 'Search bookings' });
+    var chips = h('div', { class: 'ad-chips', role: 'group', 'aria-label': 'Filter by status' });
+    var exp = h('button', { class: 'ad-btn ad-btn--sm', type: 'button', text: 'Export CSV' });
+    head(p, 'Bookings', 'Newest first. Change a status to confirm, mark paid or cancel.', exp);
+    p.appendChild(h('div', { class: 'ad-tools' }, search, chips, count));
     p.appendChild(h('div', { class: 'ad-tablewrap' }, h('table', { class: 'ad-table' },
-      h('thead', {}, h('tr', {}, ['Received', 'Guest', 'Room', 'Stay', 'Total', 'Status', ''].map(function (t) { return h('th', { text: t }); }))), body)));
-    var q = fs.query(fs.collection(fb.db, 'bookings'), fs.orderBy('createdAt', 'desc'), fs.limit(200));
-    unsubs.push(fs.onSnapshot(q, function (snap) {
-      clear(body); var fresh = 0;
-      if (snap.empty) body.appendChild(h('tr', {}, h('td', { colspan: 7, class: 'ad-empty', text: 'No bookings yet.' })));
-      snap.forEach(function (d) {
-        var b = d.data(); if (b.status === 'new') fresh++;
-        var sel = h('select', { class: 'ad-sel', 'aria-label': 'Status' }, ['new', 'confirmed', 'paid', 'cancelled'].map(function (s) { return h('option', { value: s, text: s, selected: s === b.status }); }));
+      h('thead', {}, h('tr', {}, ['Guest', 'Room', 'Stay', 'Total', 'Status', ''].map(function (t) { return h('th', { text: t }); }))), body)));
+    search.addEventListener('input', function () { term = search.value.trim().toLowerCase(); render(); });
+    exp.addEventListener('click', function () {
+      csv([['Reference', 'Received', 'Name', 'Email', 'Phone', 'Room', 'Check-in', 'Check-out', 'Nights', 'Guests', 'Total USD', 'Status', 'Notes']].concat(shown().map(function (d) {
+        var b = d.data(); return [d.id.slice(0, 8).toUpperCase(), fmt(b.createdAt), b.name, b.email, b.phone, b.room, b.checkIn, b.checkOut, b.nights, b.guests, b.total, b.status, b.notes];
+      })), 'sam-villa-bookings-' + today() + '.csv');
+    });
+    function chipsDraw() {
+      clear(chips);
+      ['all'].concat(STATUSES).forEach(function (s) {
+        var n = s === 'all' ? docs.length : docs.filter(function (d) { return d.data().status === s; }).length;
+        var c = h('button', { class: 'ad-chip' + (s === filter ? ' is-on' : ''), type: 'button', 'aria-pressed': String(s === filter) }, s === 'all' ? 'All' : s, h('span', { text: String(n) }));
+        c.addEventListener('click', function () { filter = s; chipsDraw(); render(); });
+        chips.appendChild(c);
+      });
+    }
+    function shown() {
+      return docs.filter(function (d) {
+        var b = d.data();
+        if (filter !== 'all' && b.status !== filter) return false;
+        return !term || [b.name, b.email, b.phone, b.room, d.id.slice(0, 8)].join(' ').toLowerCase().indexOf(term) > -1;
+      });
+    }
+    function render() {
+      clear(body); var list = shown();
+      count.textContent = list.length + (list.length === 1 ? ' booking' : ' bookings');
+      if (!list.length) body.appendChild(h('tr', {}, h('td', { colspan: 6, class: 'ad-empty', text: docs.length ? 'Nothing matches this filter.' : 'No bookings yet.' })));
+      list.forEach(function (d) {
+        var b = d.data();
+        var sel = h('select', { class: 'ad-sel ad-sel--' + b.status, 'aria-label': 'Status' }, STATUSES.map(function (s) { return h('option', { value: s, text: s, selected: s === b.status }); }));
         sel.addEventListener('change', function () { fs.updateDoc(fs.doc(fb.db, 'bookings', d.id), { status: sel.value }).then(function () { toast('Status updated'); }).catch(fail); });
         var del = h('button', { class: 'ad-btn ad-btn--danger ad-btn--sm', type: 'button', text: 'Delete' });
         del.addEventListener('click', function () { if (confirm('Delete this booking permanently?')) fs.deleteDoc(fs.doc(fb.db, 'bookings', d.id)).catch(fail); });
         var rc = h('button', { class: 'ad-btn ad-btn--sm', type: 'button', text: 'Email receipt' });
         rc.addEventListener('click', function () { sendReceipt(d.id, b, rc); });
         body.appendChild(h('tr', { class: b.status === 'new' ? 'is-new' : '' },
-          h('td', { text: fmt(b.createdAt) }),
-          h('td', {}, h('strong', { text: b.name }), h('span', { class: 'ad-sub', text: b.email }), h('span', { class: 'ad-sub', text: b.phone || '' }), b.notes ? h('span', { class: 'ad-sub ad-msg', text: 'Note: ' + b.notes }) : null),
-          h('td', { text: b.room }),
-          h('td', {}, b.checkIn + ' to ' + b.checkOut, h('span', { class: 'ad-sub', text: b.nights + ' nights, ' + b.guests + ' guests' })),
-          h('td', { text: money(b.total) }),
-          h('td', {}, sel), h('td', {}, rc, ' ', del)));
+          h('td', {}, h('div', { class: 'ad-guest' }, h('span', { class: 'ad-avatar', text: (b.name || '?').charAt(0).toUpperCase() }), h('span', {},
+            h('strong', { text: b.name }), h('span', { class: 'ad-sub', text: b.email }), h('span', { class: 'ad-sub', text: [b.phone, 'Ref ' + d.id.slice(0, 8).toUpperCase(), fmt(b.createdAt)].filter(Boolean).join(' · ') }),
+            b.notes ? h('span', { class: 'ad-sub ad-msg ad-note', text: b.notes }) : null))),
+          h('td', {}, h('span', { class: 'ad-roomtag' + (b.room === 'Whole Villa' ? ' is-villa' : ''), text: b.room })),
+          h('td', {}, day(b.checkIn) + ' → ' + day(b.checkOut), h('span', { class: 'ad-sub', text: b.nights + (b.nights === 1 ? ' night, ' : ' nights, ') + b.guests + (b.guests === 1 ? ' guest' : ' guests') })),
+          h('td', {}, h('strong', { text: money(b.total) })),
+          h('td', {}, sel), h('td', {}, h('div', { class: 'ad-actions' }, rc, del))));
       });
+    }
+    var q = fs.query(fs.collection(fb.db, 'bookings'), fs.orderBy('createdAt', 'desc'), fs.limit(500));
+    unsubs.push(fs.onSnapshot(q, function (snap) {
+      docs = []; snap.forEach(function (d) { docs.push(d); });
+      state.bookings = docs.map(function (d) { return d.data(); });
+      var fresh = state.bookings.filter(function (b) { return b.status === 'new'; }).length;
       var c = $('bk-count'); c.textContent = fresh; c.hidden = !fresh;
+      chipsDraw(); render(); renderOverview();
     }, fail));
   }
 
@@ -163,15 +279,16 @@
   function messages() {
     var fs = fb.fs, p = $('panel-messages');
     var body = h('tbody');
-    p.appendChild(h('div', { class: 'ad-bar' }, h('h1', { class: 'ad-h', text: 'Messages' }), h('p', { class: 'ad-muted', text: 'Sent from the contact form.' })));
+    head(p, 'Messages', 'Sent from the contact form. Reply opens your email app.');
     p.appendChild(h('div', { class: 'ad-tablewrap' }, h('table', { class: 'ad-table' },
       h('thead', {}, h('tr', {}, ['Received', 'From', 'Message', 'Status', ''].map(function (t) { return h('th', { text: t }); }))), body)));
     var q = fs.query(fs.collection(fb.db, 'messages'), fs.orderBy('createdAt', 'desc'), fs.limit(200));
     unsubs.push(fs.onSnapshot(q, function (snap) {
-      clear(body); var fresh = 0;
+      clear(body); var fresh = 0; state.messages = [];
       if (snap.empty) body.appendChild(h('tr', {}, h('td', { colspan: 5, class: 'ad-empty', text: 'No messages yet.' })));
       snap.forEach(function (d) {
-        var m = d.data(); if (m.status === 'new') fresh++;
+        var m = d.data(); if (m.status === 'new') fresh++; state.messages.push(m);
+        var reply = h('a', { class: 'ad-btn ad-btn--primary ad-btn--sm', href: 'mailto:' + encodeURIComponent(m.email).replace(/%40/g, '@') + '?subject=' + encodeURIComponent('Re: your message to Sam Villa'), text: 'Reply' });
         var toggle = h('button', { class: 'ad-btn ad-btn--sm', type: 'button', text: m.status === 'new' ? 'Mark read' : 'Mark new' });
         toggle.addEventListener('click', function () { fs.updateDoc(fs.doc(fb.db, 'messages', d.id), { status: m.status === 'new' ? 'read' : 'new' }).catch(fail); });
         var del = h('button', { class: 'ad-btn ad-btn--danger ad-btn--sm', type: 'button', text: 'Delete' });
@@ -181,9 +298,10 @@
           h('td', {}, h('strong', { text: m.name }), h('span', { class: 'ad-sub', text: m.email })),
           h('td', { class: 'ad-msg', text: m.message }),
           h('td', {}, pill(m.status)),
-          h('td', {}, h('div', { class: 'ad-actions' }, toggle, del))));
+          h('td', {}, h('div', { class: 'ad-actions' }, reply, toggle, del))));
       });
       var c = $('ms-count'); c.textContent = fresh; c.hidden = !fresh;
+      renderOverview();
     }, fail));
   }
 
@@ -191,20 +309,23 @@
   var DEFAULT_ROOMS = [
     { id: 'garden-suite', name: 'Garden Suite', rate: 85, sleeps: 2, status: 'available' },
     { id: 'family-room', name: 'Family Room', rate: 120, sleeps: 4, status: 'few' },
-    { id: 'veranda-room', name: 'Veranda Room', rate: 70, sleeps: 2, status: 'booked' }
+    { id: 'veranda-room', name: 'Veranda Room', rate: 70, sleeps: 2, status: 'booked' },
+    { id: 'whole-villa', name: 'Whole Villa', rate: 250, sleeps: 8, status: 'available' }
   ];
   function rooms() {
     var fs = fb.fs, p = $('panel-rooms'), grid = h('div', { class: 'ad-grid' });
-    var seed = h('button', { class: 'ad-btn', type: 'button', text: 'Add the three default rooms', hidden: true });
-    p.appendChild(h('div', { class: 'ad-bar' }, h('h1', { class: 'ad-h', text: 'Rooms and rates' }), seed));
-    p.appendChild(h('p', { class: 'ad-muted', text: 'Changes show on the public site straight away. Rates are per night.' }));
+    var have = {};
+    var seed = h('button', { class: 'ad-btn', type: 'button', text: 'Add missing default rooms', hidden: true });
+    head(p, 'Rooms and rates', 'Changes show on the public site straight away. Rates are per night.', seed);
     p.appendChild(grid);
     seed.addEventListener('click', function () {
-      Promise.all(DEFAULT_ROOMS.map(function (r) { return fs.setDoc(fs.doc(fb.db, 'rooms', r.id), { name: r.name, rate: r.rate, sleeps: r.sleeps, status: r.status }); }))
+      Promise.all(DEFAULT_ROOMS.filter(function (r) { return !have[r.id]; }).map(function (r) { return fs.setDoc(fs.doc(fb.db, 'rooms', r.id), { name: r.name, rate: r.rate, sleeps: r.sleeps, status: r.status }); }))
         .then(function () { toast('Rooms added'); }).catch(fail);
     });
     unsubs.push(fs.onSnapshot(fs.collection(fb.db, 'rooms'), function (snap) {
-      clear(grid); seed.hidden = !snap.empty;
+      clear(grid); have = {};
+      snap.forEach(function (d) { have[d.id] = true; });
+      seed.hidden = DEFAULT_ROOMS.every(function (r) { return have[r.id]; });
       snap.forEach(function (d) {
         var r = d.data();
         var rate = h('input', { type: 'number', min: 1, max: 100000, step: 1, value: r.rate });
@@ -213,7 +334,7 @@
         var note = h('input', { type: 'text', maxlength: 80, value: r.note || '', placeholder: 'e.g. 2 nights left in November' });
         var save = h('button', { class: 'ad-btn ad-btn--primary', type: 'submit', text: 'Save' });
         var form = h('form', { class: 'ad-form' },
-          h('h2', { class: 'ad-h2', text: r.name }),
+          h('div', { class: 'ad-bar' }, h('h2', { class: 'ad-h2', text: r.name }), h('span', { class: 'ad-pill ad-pill--' + r.status, text: r.status === 'few' ? 'few left' : r.status })),
           h('div', { class: 'ad-two' }, h('label', { class: 'ad-field' }, h('span', { text: 'Rate per night ($)' }), rate), h('label', { class: 'ad-field' }, h('span', { text: 'Sleeps' }), sleeps)),
           h('label', { class: 'ad-field' }, h('span', { text: 'Availability' }), status),
           h('label', { class: 'ad-field' }, h('span', { text: 'Note (optional)' }), note), save);
@@ -232,8 +353,7 @@
   /* ---------- reviews ---------- */
   function reviews() {
     var fs = fb.fs, p = $('panel-reviews'), list = h('div', { class: 'ad-grid' });
-    p.appendChild(h('div', { class: 'ad-bar' }, h('h1', { class: 'ad-h', text: 'Reviews' })));
-    p.appendChild(h('p', { class: 'ad-muted', text: 'Only published reviews appear on the site. Use real guest reviews.' }));
+    head(p, 'Reviews', 'Only published reviews appear on the site. Use real guest reviews.');
     p.appendChild(h('div', { class: 'ad-card' }, reviewForm(null, null)));
     p.appendChild(list);
     unsubs.push(fs.onSnapshot(fs.collection(fb.db, 'reviews'), function (snap) {
@@ -284,8 +404,7 @@
       h('label', { class: 'ad-field' }, h('span', { text: 'Hero line under the headline' }), lede),
       h('div', { class: 'ad-two' }, h('label', { class: 'ad-field' }, h('span', { text: 'Phone' }), phone), h('label', { class: 'ad-field' }, h('span', { text: 'WhatsApp number' }), wa)),
       h('label', { class: 'ad-field' }, h('span', { text: 'Email' }), email), save);
-    p.appendChild(h('div', { class: 'ad-bar' }, h('h1', { class: 'ad-h', text: 'Site content' })));
-    p.appendChild(h('p', { class: 'ad-muted', text: 'Leave a field empty to keep the default text on the site.' }));
+    head(p, 'Site content', 'Leave a field empty to keep the default text on the site.');
     p.appendChild(h('div', { class: 'ad-card' }, form));
     fs.getDoc(fs.doc(fb.db, 'content', 'site')).then(function (s) {
       var c = s.exists() ? s.data() : {};

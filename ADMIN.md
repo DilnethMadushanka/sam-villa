@@ -13,7 +13,7 @@ the web config in `js/firebase-config.js` is public by design. Security comes fr
 6. Firestore > Data: create collection `admins`, add a document whose **ID is the admin's UID** (any field, e.g. `role: "owner"`). Only people with this document can use the admin. It cannot be created from the app.
 7. Project settings > Your apps > Web app: copy the config into `js/firebase-config.js`.
 8. Authentication > Settings > **Authorized domains**: keep only your real domain(s) (remove anything you do not use).
-9. Open `/admin/`, sign in, go to **Rooms and rates** and click "Add the three default rooms".
+9. Open `/admin/`, sign in, go to **Rooms and rates** and click "Add missing default rooms" (this also adds the Whole Villa option).
 
 Run locally with a static server (modules and Firebase need http, not file://): `npx serve .` then open `/admin/`.
 

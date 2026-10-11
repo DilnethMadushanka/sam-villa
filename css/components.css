@@ -199,3 +199,6 @@
 }
 @media (prefers-reduced-motion: reduce) { .sv-root *, .sv-root *::before, .sv-root *::after { transition: none !important; animation: none !important; } }
 .sv-mark img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.sv-room--whole { grid-column: 1 / -1; grid-template-columns: 7fr 5fr; }
+.sv-room--whole .sv-room__media { min-height: 280px; }
+@media (max-width: 767px) { .sv-room--whole { grid-template-columns: 1fr; } }
