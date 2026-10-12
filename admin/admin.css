@@ -7,8 +7,8 @@ code{background:var(--ground-sunk);padding:1px 6px;border-radius:6px;font-size:1
 .ad-h{font:600 30px/36px var(--font-display);margin:0;letter-spacing:-.02em}
 .ad-h2{font:600 19px/26px var(--font-display);margin:0}
 .ad-muted{color:var(--ink-muted);margin:0}
-.ad-mark{width:36px;height:36px;border-radius:50%;overflow:hidden;background:transparent;display:grid;place-items:center;flex:none}
-.ad-mark img{width:100%;height:100%;display:block;object-fit:cover}
+.ad-mark{width:36px;height:36px;border-radius:0;overflow:visible;box-sizing:border-box;background:transparent;display:grid;place-items:center;flex:none}
+.ad-mark img{width:100%;height:100%;display:block;object-fit:contain}
 .ad-card{background:var(--ground-raised);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-1);padding:22px;display:grid;gap:16px;align-content:start;min-width:0}
 .ad-ico{width:20px;height:20px;fill:currentColor;flex:none}
 
@@ -58,7 +58,7 @@ code{background:var(--ground-sunk);padding:1px 6px;border-radius:6px;font-size:1
 .ad-side{position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;gap:24px;padding:22px 14px;background:linear-gradient(180deg,var(--ad-deep),var(--ad-deeper));color:#e8f0eb;overflow-y:auto}
 .ad-brand{display:flex;align-items:center;gap:12px;padding:0 8px;font:600 18px/22px var(--font-display);color:#fffffe}
 .ad-brand small{display:block;font:600 11px/14px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;opacity:.6}
-.ad-brand .ad-mark{width:42px;height:42px;background:#fffffe;box-shadow:0 0 0 3px rgba(255,255,254,.12)}
+.ad-brand .ad-mark{width:42px;height:42px;padding:5px;border-radius:50%;overflow:hidden;background:#fffffe;box-shadow:0 0 0 3px rgba(255,255,254,.12)}
 .ad-tabs{display:flex;flex-direction:column;gap:4px;scrollbar-width:none}
 .ad-tabs::-webkit-scrollbar{display:none}
 .ad-tab{position:relative;display:flex;align-items:center;gap:12px;white-space:nowrap;font:600 14px/20px var(--font-sans);padding:11px 14px;border-radius:14px;border:0;background:transparent;color:inherit;opacity:.78;cursor:pointer;text-align:left;transition:background-color .2s,opacity .2s}
