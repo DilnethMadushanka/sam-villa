@@ -158,6 +158,7 @@
           notes: notes, status: 'new', createdAt: fb.fs.serverTimestamp()
         }).then(function (ref) {
           stamp('svLastBooking'); form.reset();
+          notify({ bookingId: ref.id });
           var code = ref.id.slice(0, 8).toUpperCase(), bk = (window.SV_PAY || {}).bank || {};
           var how = bk.accountNo ? ' To secure your dates, transfer ' + pending.total + ' USD to ' + bk.bankName + ', ' + bk.accountName + ', account ' + bk.accountNo + (bk.branch ? ' (' + bk.branch + ')' : '') + ', and use reference ' + code + '. We will email your receipt once it arrives.' : '';
           say(status, 'Thank you. Your booking reference is ' + code + '.' + how);
@@ -167,6 +168,11 @@
           .then(function () { btn.disabled = false; });
       });
     });
+  }
+
+  /* Tells the owner by email about a new booking or message. Best effort: the guest never sees a failure. */
+  function notify(payload) {
+    try { fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true }).catch(function () {}); } catch (e) {}
   }
 
   /* ---------- contact form ---------- */
@@ -186,7 +192,7 @@
         if (!fb) return say(ms, 'Messaging is not connected yet.', true);
         var btn = mf.querySelector('[type=submit]'); btn.disabled = true;
         return fb.fs.addDoc(fb.fs.collection(fb.db, 'messages'), { name: name, email: email, message: msg, status: 'new', createdAt: fb.fs.serverTimestamp() })
-          .then(function () { stamp('svLastMessage'); mf.reset(); say(ms, 'Thank you. We will reply by email soon.'); })
+          .then(function (ref) { stamp('svLastMessage'); mf.reset(); notify({ messageId: ref.id }); say(ms, 'Thank you. We will reply by email soon.'); })
           .catch(function () { say(ms, 'Could not send. Please try again.', true); })
           .then(function () { btn.disabled = false; });
       });

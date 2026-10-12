@@ -42,7 +42,7 @@ Run locally with a static server (modules and Firebase need http, not file://): 
 ## Honest limits
 
 - Booking and message submissions are **requests**, not confirmed reservations. The site does not check live availability against bookings; the room status you set in the admin is what visitors see.
-- No email is sent automatically. You see requests in the admin; reply from your own email.
+- Guests get no automatic email on booking. You are emailed about new bookings and messages if the notification variables below are set; reply from your own email.
 
 ## Payments and receipts (free plan)
 
@@ -64,3 +64,4 @@ Run locally with a static server (modules and Firebase need http, not file://): 
 | `PAY_CURRENCY` | Optional, default `LKR` (must match the merchant account currency) |
 | `SITE_ORIGIN` | Optional, default `https://samvillalk.com` |
 | `EMAILJS_PRIVATE_KEY`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID` | Optional: automatic receipt after payment (enable "Allow non-browser API calls" in EmailJS) |
+| `EMAILJS_NOTIFY_TEMPLATE_ID`, `NOTIFY_EMAIL` | Optional: owner notification for new bookings and messages (`api/notify.js`). The template needs `{{subject}}`, `{{body}}`, `{{reply_to}}`; To email is `{{to_email}}`. `NOTIFY_EMAIL` defaults to `info@samvillalk.com`; it also needs the four `EMAILJS_*` variables above |
