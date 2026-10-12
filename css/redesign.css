@@ -178,3 +178,9 @@ html.js.is-ready .sv-stage__chip{animation:sv-pop .9s 1.5s cubic-bezier(.16,1,.3
 .sv-wa svg{width:30px;height:30px}
 @media (max-width:767px){.sv-wa{width:52px;height:52px;bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}.sv-wa svg{width:28px;height:28px}}
 @media (prefers-reduced-motion:reduce){.sv-wa{transition:none}.sv-wa:hover{transform:none}}
+
+/* Photo band: darker left side so the small copy reads over busy photos */
+@media (min-width:768px){
+  .sv-band__scrim{background:linear-gradient(to right,rgba(10,20,15,.66) 0%,rgba(10,20,15,.34) 45%,transparent 75%),linear-gradient(to top,rgba(10,20,15,.38),transparent 55%)}
+}
+.sv-band__copy p{text-shadow:0 1px 12px rgba(0,0,0,.45)}
