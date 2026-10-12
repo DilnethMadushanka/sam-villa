@@ -87,6 +87,8 @@
         b.dataset.copy = v;
         if (!isWa) b.lastChild.textContent = v;
       });
+      var wa = $('wa-float'), num = (c.whatsapp || c.phone || '').replace(/\D/g, '');
+      if (wa && num) wa.href = 'https://wa.me/' + num;
     }).catch(function () {});
   }
 
