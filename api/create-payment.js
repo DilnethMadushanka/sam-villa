@@ -3,7 +3,7 @@ const { admin, db } = require('./_lib/firebase');
 const { createTransaction } = require('./_lib/genie');
 const { expectedMinor } = require('./_lib/price');
 
-const ORIGIN = process.env.SITE_ORIGIN || 'https://sam-villa.vercel.app';
+const ORIGIN = process.env.SITE_ORIGIN || 'https://samvillalk.com';
 
 module.exports = async function (req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });

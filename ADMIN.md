@@ -62,5 +62,5 @@ Run locally with a static server (modules and Firebase need http, not file://): 
 | `FIREBASE_SERVICE_ACCOUNT` | Service account JSON (or base64 of it) |
 | `USD_TO_LKR` | Exchange rate used to turn the USD room rates into LKR, e.g. `300` |
 | `PAY_CURRENCY` | Optional, default `LKR` (must match the merchant account currency) |
-| `SITE_ORIGIN` | Optional, default `https://sam-villa.vercel.app` |
+| `SITE_ORIGIN` | Optional, default `https://samvillalk.com` |
 | `EMAILJS_PRIVATE_KEY`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID` | Optional: automatic receipt after payment (enable "Allow non-browser API calls" in EmailJS) |
