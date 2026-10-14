@@ -184,3 +184,11 @@ html.js.is-ready .sv-stage__chip{animation:sv-pop .9s 1.5s cubic-bezier(.16,1,.3
   .sv-band__scrim{background:linear-gradient(to right,rgba(10,20,15,.66) 0%,rgba(10,20,15,.34) 45%,transparent 75%),linear-gradient(to top,rgba(10,20,15,.38),transparent 55%)}
 }
 .sv-band__copy p{text-shadow:0 1px 12px rgba(0,0,0,.45)}
+
+/* Brand logo files: wordmark in the nav, white mark on the closing band, wordmark watermark in the footer */
+.sv-brand__word{display:block;width:116px;height:auto}
+@media (max-width:1023px){.sv-brand__word{width:104px}}
+.sv-cta__mark{width:96px;height:auto;margin-bottom:calc(var(--space-2) * -1);filter:drop-shadow(0 6px 18px rgba(0,0,0,.18))}
+@media (max-width:767px){.sv-cta__mark{width:76px}}
+.sv-footer__mark{color:inherit;-webkit-text-stroke:0;line-height:0}
+.sv-footer__mark img{display:block;opacity:.08;width:min(100%,880px);height:auto;margin-inline:auto}

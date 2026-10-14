@@ -2,6 +2,7 @@
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
 :root{--ad-deep:#17382c;--ad-deeper:#0f261d;--ad-side:248px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body.ad{margin:0;background:var(--ground-sunk);color:var(--ink);font:400 15px/22px var(--font-sans);-webkit-font-smoothing:antialiased}
 code{background:var(--ground-sunk);padding:1px 6px;border-radius:6px;font-size:13px}
 .ad-h{font:600 30px/36px var(--font-display);margin:0;letter-spacing:-.02em}
@@ -155,15 +156,15 @@ code{background:var(--ground-sunk);padding:1px 6px;border-radius:6px;font-size:1
   .ad-cols{grid-template-columns:1fr}
 }
 @media (max-width:900px){
-  .ad-shell{grid-template-columns:minmax(0,1fr)}
+  .ad-shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
   .ad-side{position:sticky;top:0;z-index:10;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:12px 16px}
   .ad-brand{padding:0}
   .ad-side__end{margin:0 0 0 auto;display:flex;align-items:center;gap:8px}
   .ad-link span,.ad-user,.ad-btn--ghost span{display:none}
   .ad-link{padding:10px}
   .ad-btn--ghost{padding:8px 12px}
-  .ad-tabs{order:3;flex-direction:row;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;width:calc(100% + 32px)}
-  .ad-tab{padding:9px 14px}
+  .ad-tabs{order:3;flex-direction:row;overflow-x:auto;overscroll-behavior-x:contain;scroll-padding-inline:16px;margin:0 -16px;padding:0 16px 2px;width:calc(100% + 32px)}
+  .ad-tab{flex:none;padding:9px 14px}
   .ad-tab .ad-ico{width:18px;height:18px}
   .ad-main{padding:24px 16px 64px}
   #login-view{grid-template-columns:1fr}
@@ -235,5 +236,10 @@ code{background:var(--ground-sunk);padding:1px 6px;border-radius:6px;font-size:1
   .ad-stat__n{font-size:12px}
   .ad-brand>span:last-child{font-size:16px}
   .ad-brand .ad-mark{width:36px;height:36px}
+}
+/* Phones: 16px text in fields stops iOS Safari zooming the page when a field is tapped */
+@media (max-width:900px),(pointer:coarse){
+  .ad-field input,.ad-field select,.ad-field textarea,.ad-search,.ad-sel{font-size:16px}
+  .ad-toast{max-width:calc(100% - 32px);width:max-content;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
