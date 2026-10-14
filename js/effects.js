@@ -71,9 +71,8 @@
     var max=document.documentElement.scrollHeight-window.innerHeight;
     prog.style.transform='scaleX('+(max>0?Math.min(y/max,1):0)+')';
     if(header)header.classList.toggle('is-scrolled',y>12);
-    var hy=Math.max(0,y-(window.svDoorDist||0));/* scroll past the entrance doors, if any */
-    if(bg&&!reduce&&hy<window.innerHeight*1.2)bg.style.transform='translate3d(0,'+(hy*.12).toFixed(1)+'px,0)';
-    if(dock&&stage){dock.classList.toggle('is-on',hy>stage.offsetHeight*.7)}
+    if(bg&&!reduce&&y<window.innerHeight*1.2)bg.style.transform='translate3d(0,'+(y*.12).toFixed(1)+'px,0)';
+    if(dock&&stage){dock.classList.toggle('is-on',y>stage.offsetHeight*.7)}
     ticking=false;
   }
   window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
