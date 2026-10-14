@@ -116,7 +116,15 @@
     document.querySelectorAll('.ad-tab').forEach(function (t) { var on = t.dataset.tab === tab; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', String(on)); });
     document.querySelectorAll('.ad-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + tab; });
     window.scrollTo(0, 0);
+    centerTab();
     if (tab === 'overview') renderRevenue();
+  }
+  /* On phones the tabs are a sideways strip: keep the selected one in view instead of cut off at the edge. */
+  function centerTab() {
+    var strip = $('tabs'), on = strip.querySelector('.is-on');
+    if (!on || strip.scrollWidth <= strip.clientWidth) return;
+    var sr = strip.getBoundingClientRect(), r = on.getBoundingClientRect();
+    strip.scrollTo({ left: strip.scrollLeft + r.left - sr.left - (sr.width - r.width) / 2 });
   }
   var resizeT;
   window.addEventListener('resize', function () { clearTimeout(resizeT); resizeT = setTimeout(renderRevenue, 150); });
