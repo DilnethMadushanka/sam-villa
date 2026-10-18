@@ -121,3 +121,52 @@ html.js.is-ready .sv-stage--split .sv-hero__ctas{animation-name:sv-hero-in;anima
 @media (min-width:600px) and (max-width:859px){
   .sv-stage--split .sv-stage__media{aspect-ratio:16 / 9;border-radius:999px 999px 24px 24px / 60% 60% 24px 24px}
 }
+
+/* ---------- 3D: arched photo swings in, then tilts toward the cursor ---------- */
+.sv-stage.sv-stage--split{perspective:1800px;perspective-origin:70% 40%}
+.sv-stage--split .sv-stage__media{
+  --rx:0deg;--ry:0deg;--px:0px;--py:0px;--gx:50%;--gy:30%;--glare:0;
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transform-origin:50% 60%;
+  transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.45);will-change:transform;
+}
+.sv-stage--split .sv-stage__media img{transform:translate3d(var(--px),var(--py),0) scale(1.08);transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.sv-stage--split .sv-stage__media::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(60% 50% at var(--gx) var(--gy),rgba(255,236,214,.38),transparent 70%);
+  opacity:var(--glare);transition:opacity .5s;mix-blend-mode:soft-light;
+}
+.sv-stage--split .sv-stage__media.is-tilting{transition:transform .18s ease-out;box-shadow:calc(var(--ry) * -2.4) 34px 70px -18px rgba(0,0,0,.5)}
+.sv-stage--split .sv-stage__media.is-tilting img{transition:transform .18s ease-out}
+
+/* 3D entrance replaces the flat clip reveal; fill backwards only, so the tilt owns transform afterwards */
+html.js .sv-stage--split .sv-stage__media{clip-path:none;opacity:0}
+html.js.is-ready .sv-stage--split .sv-stage__media{animation:sv-hero-swing 1.7s .1s cubic-bezier(.16,1,.3,1) backwards;opacity:1}
+@keyframes sv-hero-swing{
+  from{opacity:0;transform:translate3d(0,70px,-220px) rotateX(26deg) rotateY(-14deg)}
+  40%{opacity:1}
+  to{opacity:1;transform:rotateX(0) rotateY(0)}
+}
+
+/* ---------- 3D: headline words flip up into place ---------- */
+.sv-stage--split .sv-h--xl .sv-word{overflow:visible;perspective:700px;padding-bottom:0;margin-bottom:0}
+.sv-stage--split .sv-h--xl .sv-word>span{transform-origin:50% 100%;backface-visibility:hidden}
+html.js .sv-stage--split .sv-stage__copy .sv-word>span{transform:none;opacity:0}
+html.js.is-ready .sv-stage--split .sv-stage__copy .sv-word>span{
+  animation:sv-hero-flip .9s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(.3s + var(--w) * 75ms)
+}
+@keyframes sv-hero-flip{
+  from{opacity:0;transform:translateY(.35em) rotateX(-92deg)}
+  45%{opacity:1}
+  to{opacity:1;transform:none}
+}
+
+@media (max-width:859px){
+  html.js.is-ready .sv-stage--split .sv-stage__media{animation:sv-hero-swing-sm 1.1s .1s cubic-bezier(.16,1,.3,1) backwards}
+  @keyframes sv-hero-swing-sm{from{opacity:0;transform:translate3d(0,40px,-160px) rotateX(22deg)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){
+  .sv-stage--split .sv-stage__media,.sv-stage--split .sv-stage__media img{transform:none!important;transition:none!important}
+  .sv-stage--split .sv-stage__media::after{display:none}
+  html.js .sv-stage--split .sv-stage__copy .sv-word>span{opacity:1!important;animation:none!important;transform:none!important}
+}
