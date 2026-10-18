@@ -1,0 +1,123 @@
+/* Sam Villa hero v3, loaded last.
+   Built with the UI UX Pro Max guidance, kept inside the Sam Villa brand:
+   - Hero-centric + trust pattern: one dominant photo, one primary CTA, proof right under it.
+   - Contrast: copy sits on solid forest, never on the photo (4.5:1 minimum, here 10:1+).
+   - Motion: two key elements only (headline reveal, photo reveal); static under reduced motion.
+   - Size to content, not 100vh; booking bar stays in the first screen at 1440x900.
+   - Follows design-system/components/Hero: copy left, arched photo right, photo above copy on phones. */
+
+.sv-stage.sv-stage--split{
+  --hero-pad:var(--space-4);
+  --hero-overlap:var(--space-12);
+  display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);align-items:stretch;gap:var(--space-4);
+  width:min(100vw - 24px,1360px);margin-inline:calc(50% - min(50vw - 12px,680px));
+  min-height:0;padding:var(--hero-pad) var(--hero-pad) calc(var(--hero-pad) + var(--hero-overlap));
+  border-radius:44px;overflow:hidden;isolation:isolate;color:#fffffe;
+  background:
+    radial-gradient(120% 90% at 0% 0%,rgba(46,116,88,.55),transparent 60%),
+    radial-gradient(70% 60% at 100% 100%,rgba(255,138,110,.10),transparent 70%),
+    var(--forest);
+  box-shadow:var(--shadow-3);
+}
+
+/* ---------- Copy ---------- */
+.sv-stage--split .sv-stage__copy{
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:var(--space-6);
+  max-width:none;padding:var(--space-12) var(--space-4) var(--space-8) clamp(var(--space-8),4vw,var(--space-16));
+}
+.sv-stage--split .sv-eyebrow{
+  display:block;padding:0;border:0;background:none;border-radius:0;
+  color:#ffc2b0;font:600 13px/18px var(--font-sans);letter-spacing:.12em;
+}
+.sv-stage--split .sv-eyebrow::before{content:none}
+.sv-stage--split .sv-h--xl{
+  margin:0;max-width:21ch;
+  font-size:clamp(44px,4vw,60px);line-height:1.02;letter-spacing:-.03em;font-weight:600;
+  color:#fffffe;text-shadow:none;text-wrap:balance;
+}
+.sv-stage--split .sv-lede{max-width:40ch;font-size:19px;line-height:30px;color:rgba(255,255,254,.84)}
+.sv-stage--split .sv-hero__ctas{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-2)}
+.sv-root .sv-stage--split .sv-hero__ctas .sv-button{min-width:0}
+
+/* Proof: icon and label pairs, no dots, no floating badges */
+.sv-stage__proof{
+  list-style:none;margin:var(--space-2) 0 0;padding:var(--space-6) 0 0;
+  display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-8);
+  border-top:1px solid rgba(255,255,254,.16);width:100%;
+  font:500 15px/22px var(--font-sans);color:rgba(255,255,254,.86);
+}
+.sv-stage__proof li{display:flex;align-items:center;gap:var(--space-3)}
+.sv-stage__proof b{font:700 17px/22px var(--font-display);color:#fffffe;font-variant-numeric:tabular-nums}
+.sv-stage__proof-icon{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,254,.1);color:#fffffe}
+.sv-stage__proof-icon--star{background:var(--coral);color:var(--on-coral)}
+.sv-stage__proof .sv-icon{width:18px;height:18px}
+
+/* ---------- Photo: the brand arch ---------- */
+.sv-stage--split .sv-stage__media{
+  position:relative;margin:0;min-height:560px;overflow:hidden;
+  border-radius:360px 360px 32px 32px / 300px 300px 32px 32px;
+  background:var(--jungle);
+}
+.sv-stage--split .sv-stage__media img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:46% 50%;display:block;
+}
+
+/* ---------- Booking bar overlaps the card's bottom edge ---------- */
+.sv-stage--split + .sv-bookwrap{margin-top:calc(-1 * var(--space-12))}
+@media (max-width:859px){.sv-stage--split + .sv-bookwrap{margin-top:calc(-1 * var(--space-8))}}
+
+/* ---------- Motion: headline + photo only ---------- */
+html.js .sv-stage--split .sv-stage__media{clip-path:inset(100% 0 0 0 round 360px 360px 32px 32px / 300px 300px 32px 32px)}
+html.js.is-ready .sv-stage.sv-stage--split{animation:none}
+html.js.is-ready .sv-stage--split .sv-stage__media{animation:sv-hero-rise 1.1s .15s cubic-bezier(.16,1,.3,1) both}
+html.js .sv-stage--split .sv-stage__proof{opacity:0}
+html.js.is-ready .sv-stage--split .sv-stage__proof{animation:sv-hero-in .6s 1.25s ease-out both}
+html.js.is-ready .sv-stage--split .sv-eyebrow,
+html.js.is-ready .sv-stage--split .sv-lede,
+html.js.is-ready .sv-stage--split .sv-hero__ctas{animation-name:sv-hero-in;animation-duration:.6s;animation-timing-function:ease-out}
+@keyframes sv-hero-rise{from{clip-path:inset(100% 0 0 0 round 360px 360px 32px 32px / 300px 300px 32px 32px)}to{clip-path:inset(0 0 0 0 round 360px 360px 32px 32px / 300px 300px 32px 32px)}}
+@keyframes sv-hero-in{from{opacity:0}to{opacity:1}}
+
+/* ---------- Tablet ---------- */
+@media (max-width:1023px){
+  .sv-stage--split .sv-stage__copy{padding:var(--space-8) var(--space-4) var(--space-6) var(--space-6)}
+  .sv-stage--split .sv-h--xl{font-size:clamp(40px,5.4vw,54px)}
+  .sv-stage--split .sv-lede{font-size:17px;line-height:27px}
+  .sv-stage--split .sv-stage__media{min-height:480px}
+}
+
+/* ---------- Phone and small tablet: photo above copy ---------- */
+@media (max-width:859px){
+  .sv-stage.sv-stage--split{
+    --hero-pad:10px;--hero-overlap:var(--space-8);
+    grid-template-columns:1fr;gap:0;
+    width:auto;margin-inline:calc(-1 * var(--space-2));border-radius:32px;
+  }
+  .sv-stage--split .sv-stage__media{order:-1;min-height:0;aspect-ratio:4 / 3.1;border-radius:999px 999px 24px 24px / 70% 70% 24px 24px}
+  .sv-stage--split .sv-stage__media img{object-position:54% 40%}
+  html.js .sv-stage--split .sv-stage__media{clip-path:none;opacity:0}
+  html.js.is-ready .sv-stage--split .sv-stage__media{animation:sv-hero-in .8s .1s ease-out both}
+  .sv-stage--split .sv-stage__copy{gap:var(--space-4);padding:var(--space-6) var(--space-4) var(--space-4)}
+  .sv-stage--split .sv-eyebrow{font-size:12px;line-height:16px}
+  .sv-stage--split .sv-h--xl{font-size:clamp(36px,10.4vw,48px);line-height:1.04;max-width:14ch}
+  .sv-stage--split .sv-lede{font-size:16px;line-height:25px;max-width:36ch;color:rgba(255,255,254,.88)}
+  .sv-stage--split .sv-hero__ctas{width:100%;gap:var(--space-2);margin-top:0}
+  .sv-root .sv-stage--split .sv-hero__ctas .sv-button{flex:1 1 100%;min-height:52px}
+  .sv-stage__proof{gap:var(--space-3);padding-top:var(--space-4);font-size:14px;line-height:20px;flex-direction:column}
+  .sv-stage__proof-icon{width:32px;height:32px}
+}
+
+/* ---------- Reduced motion: final state, no movement ---------- */
+@media (prefers-reduced-motion:reduce){
+  html.js .sv-stage--split .sv-stage__media,
+  html.js .sv-stage--split .sv-stage__proof,
+  html.js .sv-stage--split .sv-stage__copy .sv-word>span,
+  html.js .sv-stage--split .sv-eyebrow,
+  html.js .sv-stage--split .sv-lede,
+  html.js .sv-stage--split .sv-hero__ctas{animation:none!important;clip-path:none!important;opacity:1!important;transform:none!important}
+}
+
+/* Small tablets: keep the stacked photo from crowding out the copy */
+@media (min-width:600px) and (max-width:859px){
+  .sv-stage--split .sv-stage__media{aspect-ratio:16 / 9;border-radius:999px 999px 24px 24px / 60% 60% 24px 24px}
+}
