@@ -170,3 +170,51 @@ html.js.is-ready .sv-stage--split .sv-stage__copy .sv-word>span{
   .sv-stage--split .sv-stage__media::after{display:none}
   html.js .sv-stage--split .sv-stage__copy .sv-word>span{opacity:1!important;animation:none!important;transform:none!important}
 }
+
+/* ---------- 3D on scroll (js/hero-scroll.js sets --p from 0 to 1 over the first half screen of scrolling) ----------
+   The card tips back from its top edge, the arched photo turns in depth and steps back, and two more
+   arched photos fan out behind it like a hand of cards. --amp tones it down on phones. */
+.sv-stage.sv-stage--split{--p:0;--amp:1}
+.sv-stage--split.is-scroll3d{
+  transform:perspective(1600px) rotateX(calc(var(--p) * var(--amp) * 7deg)) scale(calc(1 - var(--p) * .04));
+  transform-origin:50% 0;will-change:transform;
+}
+.sv-stage__deck{position:relative;display:grid;min-width:0;transform-style:preserve-3d}
+.sv-stage__deck > .sv-stage__media{grid-area:1 / 1;z-index:2}
+.sv-stage--split.is-scroll3d .sv-stage__deck{
+  transform:rotateX(calc(var(--p) * var(--amp) * 10deg)) rotateY(calc(var(--p) * var(--amp) * -20deg));
+  transform-origin:50% 80%;will-change:transform;
+}
+/* scale and translate are separate properties, so they stack with the cursor tilt on transform */
+.sv-stage--split.is-scroll3d .sv-stage__media{scale:calc(1 - var(--p) * .2);translate:0 calc(var(--p) * 4%) calc(var(--p) * 60px)}
+.sv-stage__back{
+  position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;pointer-events:none;
+  border-radius:360px 360px 32px 32px / 300px 300px 32px 32px;background:var(--jungle);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.55);transform-origin:50% 100%;
+}
+.sv-stage__back img{width:100%;height:100%;object-fit:cover;display:block}
+.sv-stage--split.is-scroll3d .sv-stage__back{opacity:min(1,calc(var(--p) * 3));will-change:transform,opacity}
+.sv-stage--split.is-scroll3d .sv-stage__back--a{
+  transform:translate3d(calc(var(--p) * var(--amp) * -20%),calc(var(--p) * -2%),calc(var(--p) * -60px))
+    rotate(calc(var(--p) * var(--amp) * -16deg)) scale(calc(1 - var(--p) * .16));
+}
+.sv-stage--split.is-scroll3d .sv-stage__back--b{
+  transform:translate3d(calc(var(--p) * var(--amp) * 12%),calc(var(--p) * 2%),calc(var(--p) * -120px))
+    rotate(calc(var(--p) * var(--amp) * 13deg)) scale(calc(1 - var(--p) * .2));
+}
+@media (min-width:860px){
+  .sv-stage--split.is-scroll3d .sv-stage__copy{transform:translate3d(0,calc(var(--p) * 36px),0);will-change:transform}
+}
+@media (max-width:859px){
+  .sv-stage.sv-stage--split{--amp:.7}
+  .sv-stage__deck{order:-1}
+  .sv-stage__back{border-radius:999px 999px 24px 24px / 70% 70% 24px 24px}
+}
+@media (min-width:600px) and (max-width:859px){
+  .sv-stage__back{border-radius:999px 999px 24px 24px / 60% 60% 24px 24px}
+}
+@media (prefers-reduced-motion:reduce){
+  .sv-stage--split.is-scroll3d,.sv-stage--split.is-scroll3d .sv-stage__deck,.sv-stage--split.is-scroll3d .sv-stage__copy{transform:none}
+  .sv-stage--split.is-scroll3d .sv-stage__media{scale:none;translate:none}
+  .sv-stage__back{display:none}
+}
