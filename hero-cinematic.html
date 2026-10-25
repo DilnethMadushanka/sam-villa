@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sam Villa Cinematic Hero</title>
+<meta name="description" content="Sam Villa, a garden bed and breakfast in Mattegoda, Sri Lanka. Breakfast on the veranda, a garden at every door, and hosts next door.">
+<meta name="theme-color" content="#0a0d0c">
+<link rel="icon" type="image/png" sizes="32x32" href="images/logo-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Same two brand fonts as the main site (Bricolage Grotesque for headings, Figtree for text) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one pinned full-bleed stage. Copy column on the left, a floating photo card on the right,
+   a numbered rail on the right edge. The glow behind everything follows a day at the villa:
+   sunrise gold (breakfast), garden teal (afternoon), sunset coral (evening), night blue (your stay). */
+:root{
+  --night:#0a0d0c;          /* page ground, a green-biased black */
+  --night-2:#131815;        /* raised surfaces */
+  --ink:#f4efe6;            /* main text, warm white */
+  --ink-2:rgba(244,239,230,.70);
+  --ink-3:rgba(244,239,230,.46);
+  --line:rgba(244,239,230,.14);
+  --coral:#ff8a6e;          /* brand accent, booking button only */
+  --on-coral:#2a1209;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --gutter:max(16px,6vw);
+  --nav-h:72px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;background:var(--night);color:var(--ink);font:400 16px/1.6 var(--font-body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--coral);outline-offset:3px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Glow: one layer per time of day, crossfaded with opacity so it stays on the GPU ---------- */
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none}
+.glow__l{position:absolute;inset:0;opacity:0;will-change:opacity}
+.glow__l.is-on{opacity:1}
+.glow__l--dawn{background:radial-gradient(55% 50% at 22% 30%,rgba(217,154,78,.30),transparent 70%),radial-gradient(45% 45% at 82% 82%,rgba(120,70,30,.28),transparent 70%)}
+.glow__l--gold{background:radial-gradient(55% 55% at 20% 40%,rgba(242,180,90,.42),transparent 70%),radial-gradient(40% 45% at 78% 70%,rgba(255,214,140,.16),transparent 70%)}
+.glow__l--teal{background:radial-gradient(55% 55% at 20% 40%,rgba(35,165,140,.40),transparent 70%),radial-gradient(45% 50% at 80% 75%,rgba(20,90,110,.36),transparent 70%)}
+.glow__l--sunset{background:radial-gradient(55% 55% at 20% 42%,rgba(255,122,77,.44),transparent 70%),radial-gradient(45% 50% at 82% 78%,rgba(160,40,90,.34),transparent 70%)}
+.glow__l--night{background:radial-gradient(60% 55% at 50% 20%,rgba(63,95,214,.42),transparent 70%),radial-gradient(50% 50% at 50% 100%,rgba(30,35,110,.50),transparent 70%)}
+
+/* ---------- Film grain ---------- */
+.grain{position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-2%,6%)}80%{transform:translate(5%,2%)}100%{transform:translate(0,0)}}
+
+/* ---------- Navbar ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background-color .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.is-solid{background:rgba(10,13,12,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-color:var(--line)}
+.nav__in{height:var(--nav-h);display:flex;align-items:center;gap:24px;padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 19px/1 var(--font-display);letter-spacing:-.01em;margin-right:auto}
+.brand img{width:34px;height:auto}
+.nav__links{display:flex;gap:28px}
+.nav__links a{font:500 14px/1 var(--font-body);color:var(--ink-2);text-decoration:none;letter-spacing:.02em;transition:color .2s}
+.nav__links a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:999px;font:600 14px/1 var(--font-body);text-decoration:none;white-space:nowrap;transition:transform .25s,background-color .25s,box-shadow .25s}
+.btn--line{border:1px solid rgba(244,239,230,.32);color:var(--ink)}
+.btn--line:hover{background:var(--ink);color:var(--night)}
+@media (max-width:899px){.nav__links{display:none}.btn--line{padding:0 16px}}
+
+/* ---------- Story: default flow layout (phones, reduced motion, or if scripts fail) ---------- */
+.story,.stay,.foot{position:relative;z-index:1}
+.story__stage{position:relative}
+.card{position:relative;margin:0;height:100svh;min-height:560px;overflow:hidden;background:var(--night-2)}
+.card__tilt{position:absolute;inset:0}
+.card__slide{position:absolute;inset:0}
+.card__slide:not(:first-child){display:none}
+.card__slide img{width:100%;height:100%;object-fit:cover;transform-origin:50% 60%}
+.card__cap{position:absolute;left:18px;bottom:18px;padding:7px 12px;border-radius:999px;background:rgba(10,13,12,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:500 12px/1 var(--font-body);letter-spacing:.04em;color:var(--ink);opacity:0}
+.card__shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(10,13,12,.55) 0%,rgba(10,13,12,0) 28%,rgba(10,13,12,0) 45%,rgba(10,13,12,.82) 100%)}
+
+.intro{position:absolute;inset:0 0 auto 0;height:100svh;min-height:560px;z-index:3;display:grid;align-content:end;gap:14px;padding-block:0 clamp(28px,6vh,64px);padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px));pointer-events:none}
+.intro a{pointer-events:auto}
+.eyebrow{margin:0;font:600 12px/1.4 var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.intro__title{margin:0;font:800 clamp(54px,14.5vw,260px)/.86 var(--font-display);letter-spacing:-.035em;text-transform:uppercase;white-space:nowrap}
+.intro__title .w{display:inline-block;overflow:hidden;padding-bottom:.04em;vertical-align:top}
+.intro__title .w + .w{margin-left:.18em}
+.intro__title .ch{display:inline-block;will-change:transform}
+.intro__row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.intro__tag{margin:0;max-width:30ch;font:500 clamp(17px,1.6vw,22px)/1.35 var(--font-body);color:var(--ink)}
+.cue{display:flex;align-items:center;gap:12px;font:600 11px/1 var(--font-body);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+.cue__line{position:relative;width:1px;height:44px;background:var(--line);overflow:hidden}
+.cue__line::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--ink);animation:cue 2s cubic-bezier(.6,0,.2,1) infinite}
+@keyframes cue{to{top:100%}}
+
+.chapters{display:grid}
+.chap{display:grid;gap:28px;padding-block:clamp(72px,12vh,140px);padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+.chap__copy{display:grid;gap:18px;align-content:center;min-width:0}
+.chap__time{display:flex;align-items:center;gap:14px;margin:0;font:600 13px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.chap__time b{font:700 15px/1 var(--font-body);color:var(--ink);letter-spacing:.06em}
+.chap__time::after{content:"";width:48px;height:1px;background:var(--line)}
+.chap h2{margin:0;font:800 clamp(42px,5.4vw,98px)/.9 var(--font-display);letter-spacing:-.025em;text-transform:uppercase;text-wrap:balance}
+.chap__text{margin:0;max-width:40ch;font-size:clamp(16px,1.25vw,19px);line-height:1.6;color:var(--ink-2)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0;padding:0;list-style:none}
+.facts li{padding:8px 14px;border:1px solid var(--line);border-radius:999px;font:500 13px/1 var(--font-body);color:var(--ink)}
+.chap__img{width:100%;aspect-ratio:4/3.4;max-width:100%;object-fit:cover;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+@media (min-width:900px){
+  .chap{grid-template-columns:minmax(0,1fr) minmax(0,.8fr);align-items:center;gap:6vw;padding-right:max(calc(var(--gutter) + 64px),env(safe-area-inset-right,0px))}
+  .chap__img{aspect-ratio:4/4.6}
+}
+
+/* ---------- Story: cinematic layout (desktop with motion allowed; class added by the script) ---------- */
+.cine .story__stage{height:100vh;overflow:hidden;perspective:1600px}
+.cine .intro{height:100%;min-height:0}
+.cine .card{position:absolute;left:0;top:0;width:100%;height:100%;min-height:0;z-index:2;transform-style:preserve-3d;box-shadow:0 50px 140px rgba(0,0,0,.6),0 0 0 1px rgba(244,239,230,.08);will-change:transform,width,height,left,top}
+.cine .card__slide{display:block;opacity:0}
+.cine .card__slide:first-child{opacity:1}
+.cine .chapters{position:absolute;inset:0;z-index:3;pointer-events:none;display:block}
+.cine .chap{position:absolute;left:0;top:50%;transform:translateY(-46%);width:min(46vw,700px);padding:0;padding-left:max(var(--gutter),env(safe-area-inset-left,0px));display:block}
+.cine .chap__copy > *{opacity:0;visibility:hidden}
+.cine .chap__img{display:none}
+.cine .chap a{pointer-events:auto}
+
+/* ---------- Numbered rail ---------- */
+.dots{position:fixed;z-index:45;top:50%;right:max(22px,calc(env(safe-area-inset-right,0px) + 22px));transform:translateY(-50%);display:none;flex-direction:column;gap:6px}
+.dots a{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:6px 0;text-decoration:none;color:var(--ink-3);font:600 11px/1 var(--font-body);letter-spacing:.14em;font-variant-numeric:tabular-nums}
+.dots__label{opacity:0;transform:translateX(6px);transition:opacity .3s,transform .3s;text-transform:uppercase;white-space:nowrap}
+.dots__dot{width:6px;height:6px;border-radius:999px;background:currentColor;transition:height .45s cubic-bezier(.2,.8,.2,1),background-color .3s}
+.dots a:hover .dots__label,.dots a.is-on .dots__label{opacity:1;transform:none}
+.dots a.is-on{color:var(--ink)}
+.dots a.is-on .dots__dot{height:26px;background:var(--ink)}
+@media (min-width:900px){.dots{display:flex}}
+
+/* ---------- Stay: arc gallery and booking panel, flow layout first ---------- */
+.stay__stage{position:relative;display:grid;gap:40px;padding-block:clamp(72px,12vh,140px);padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+.arc{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 4px 28px;margin:0 -4px;scrollbar-width:none}
+.arc::-webkit-scrollbar{display:none}
+.arc__ph{flex:0 0 auto;width:clamp(150px,40vw,210px);margin:0;aspect-ratio:4/5;border-radius:18px;overflow:hidden;scroll-snap-align:center;background:var(--night-2);box-shadow:0 24px 60px rgba(0,0,0,.5);transform:rotate(var(--r,0deg))}
+.arc__ph img{width:100%;height:100%;object-fit:cover}
+.stay__title{display:grid;gap:12px;text-align:left}
+.stay__title h2{margin:0;font:800 clamp(44px,7vw,120px)/.88 var(--font-display);letter-spacing:-.03em;text-transform:uppercase}
+.stay__title p{margin:0}
+
+.book{display:grid;gap:28px;padding:clamp(22px,3vw,40px);border-radius:28px;background:rgba(19,24,21,.88);border:1px solid var(--line);box-shadow:0 40px 120px rgba(0,0,0,.55);min-width:0}
+.book__info{display:grid;gap:18px;align-content:start;min-width:0}
+.book__h{margin:0;font:800 clamp(30px,3.2vw,48px)/.95 var(--font-display);letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price__from{font:500 14px/1 var(--font-body);color:var(--ink-2)}
+.price__big{font:800 clamp(44px,4.4vw,64px)/1 var(--font-display);letter-spacing:-.03em}
+.price__per{font:500 15px/1 var(--font-body);color:var(--ink-2)}
+.note{margin:0;font-size:13px;color:var(--ink-3)}
+.rating{display:flex;align-items:center;gap:10px;font:600 15px/1 var(--font-body)}
+.rating svg{width:18px;height:18px;fill:var(--coral)}
+.rating span{font-weight:400;color:var(--ink-2)}
+.good{display:grid;gap:8px;margin:0;padding:18px 0 0;border-top:1px solid var(--line);list-style:none;font-size:14px;color:var(--ink-2)}
+.good b{color:var(--ink);font-weight:600}
+
+.form{display:grid;gap:14px;align-content:start;min-width:0}
+.form__row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:6px;min-width:0}
+.field label{font:600 12px/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.field input,.field select{width:100%;min-width:0;min-height:50px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:rgba(244,239,230,.06);color:var(--ink);font:500 16px/1 var(--font-body);color-scheme:dark}
+.field select option{background:var(--night-2);color:var(--ink)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(255,138,110,.25)}
+.field.is-bad input{border-color:#ff6b5a}
+.sum{margin:2px 0 0;min-height:1.6em;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.sum.is-bad{color:#ffb4a6}
+.btn-glow{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:10px;min-height:58px;border-radius:999px;background:var(--coral);color:var(--on-coral);font:700 17px/1 var(--font-body);text-decoration:none;box-shadow:0 0 0 1px rgba(255,138,110,.7),0 12px 40px rgba(255,138,110,.40);transition:transform .25s,box-shadow .25s}
+.btn-glow::before{content:"";position:absolute;inset:-10px;z-index:-1;border-radius:inherit;background:radial-gradient(closest-side,rgba(255,138,110,.55),transparent);filter:blur(12px);animation:pulse 2.8s ease-in-out infinite}
+.btn-glow:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,170,150,.9),0 18px 60px rgba(255,138,110,.6)}
+.btn-glow svg{width:18px;height:18px}
+@keyframes pulse{0%,100%{opacity:.45;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+@media (min-width:900px){
+  .book{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:48px}
+  .stay__stage{padding-right:max(calc(var(--gutter) + 64px),env(safe-area-inset-right,0px))}
+}
+@media (max-width:420px){.form__row{grid-template-columns:1fr}}
+
+/* Cinematic stay */
+.cine .stay__stage{display:block;height:100vh;padding:0;overflow:hidden}
+.cine .arc{position:absolute;inset:0;display:block;overflow:visible;padding:0;margin:0;pointer-events:none}
+.cine .arc__ph{position:absolute;left:50%;top:50%;width:clamp(150px,12.5vw,220px);transform:none}
+.cine .stay__title{position:absolute;left:50%;top:70%;width:min(90vw,900px);text-align:center;justify-items:center}
+.cine .book{position:absolute;left:50%;top:calc(50% + var(--nav-h) / 2);width:min(1060px,100vw - 2 * var(--gutter) - 80px);visibility:hidden}
+
+/* ---------- Footer ---------- */
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 32px;padding-block:40px calc(40px + env(safe-area-inset-bottom,0px));padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px));border-top:1px solid var(--line);font-size:14px;color:var(--ink-3)}
+.foot p{margin:0}
+
+@media (prefers-reduced-motion:reduce){
+  .grain,.cue__line::after,.btn-glow::before{animation:none}
+  .glow__l{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="glow" aria-hidden="true">
+  <div class="glow__l glow__l--dawn is-on" data-glow="dawn"></div>
+  <div class="glow__l glow__l--gold" data-glow="gold"></div>
+  <div class="glow__l glow__l--teal" data-glow="teal"></div>
+  <div class="glow__l glow__l--sunset" data-glow="sunset"></div>
+  <div class="glow__l glow__l--night" data-glow="night"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="brand" href="#top"><img src="images/logo-icon-white.png" alt="" width="240" height="200">Sam Villa</a>
+    <!-- These link to sections of the main home page (index.html). -->
+    <nav class="nav__links" aria-label="Main">
+      <a href="index.html#rooms">Rooms</a>
+      <a href="#breakfast">Breakfast</a>
+      <a href="index.html#around-us">Around us</a>
+      <a href="index.html#reviews">Reviews</a>
+    </nav>
+    <a class="btn btn--line" href="#stay">Check availability</a>
+  </div>
+</header>
+
+<!-- ============ NUMBERED RAIL ============ -->
+<nav class="dots" id="dots" aria-label="Sections on this page">
+  <a href="#top" data-i="0"><span class="dots__label">Welcome</span><span>01</span><span class="dots__dot"></span></a>
+  <a href="#breakfast" data-i="1"><span class="dots__label">Breakfast</span><span>02</span><span class="dots__dot"></span></a>
+  <a href="#garden" data-i="2"><span class="dots__label">Garden</span><span>03</span><span class="dots__dot"></span></a>
+  <a href="#hosts" data-i="3"><span class="dots__label">Hosts</span><span>04</span><span class="dots__dot"></span></a>
+  <a href="#stay" data-i="4"><span class="dots__label">Your stay</span><span>05</span><span class="dots__dot"></span></a>
+</nav>
+
+<main>
+<!-- ============ HERO + STORY ============ -->
+<section class="story" id="top" aria-label="Sam Villa">
+  <div class="story__stage">
+
+    <!-- The floating photo card. Slide 1 is the full-screen intro photo; slides 2 to 4 crossfade in with each highlight.
+         REPLACE PHOTOS: swap the src of each <img> for your own (landscape or 4:5, about 1600px wide). -->
+    <figure class="card" id="card">
+      <div class="card__tilt">
+        <div class="card__slide"><img src="images/hero.jpg" alt="Sam Villa and its tropical garden in warm late-afternoon light" width="1200" height="896" fetchpriority="high"><span class="card__cap">The villa, late afternoon</span></div>
+        <div class="card__slide"><img src="images/breakfast-veranda.jpg" alt="Breakfast of fruit, eggs and tea laid out on the veranda" width="1376" height="768" loading="lazy" decoding="async"><span class="card__cap">Breakfast on the veranda</span></div>
+        <div class="card__slide"><img src="images/room-garden-suite.jpg" alt="The Garden Suite with a sofa, bed and tall windows" width="1200" height="1500" loading="lazy" decoding="async"><span class="card__cap">The Garden Suite</span></div>
+        <div class="card__slide"><img src="images/hosts.jpg" alt="Your hosts on the front steps of Sam Villa" width="896" height="1200" loading="lazy" decoding="async"><span class="card__cap">Your hosts, next door</span></div>
+        <div class="card__shade"></div>
+      </div>
+    </figure>
+
+    <!-- EDIT: name, location and tagline -->
+    <div class="intro" id="intro">
+      <p class="eyebrow">Garden bed and breakfast in Mattegoda, Sri Lanka</p>
+      <h1 class="intro__title" aria-label="Sam Villa"><span class="w">SAM</span><span class="w">VILLA</span></h1>
+      <div class="intro__row">
+        <p class="intro__tag">Your garden home for slow, sunny mornings</p>
+        <a class="cue" href="#breakfast">Scroll to explore <span class="cue__line" aria-hidden="true"></span></a>
+      </div>
+    </div>
+
+    <!-- One chapter per highlight. Each one swaps the card photo (data-slide) and the glow (data-glow). -->
+    <div class="chapters">
+      <article class="chap" id="breakfast" data-slide="1" data-glow="gold">
+        <div class="chap__copy">
+          <p class="chap__time"><b>07:30</b> Morning</p>
+          <h2>Breakfast on the veranda</h2>
+          <p class="chap__text">Fresh fruit, eggs your way and Ceylon tea, cooked by us and served from 7:30 to 10:00. It is included in every stay.</p>
+          <ul class="facts"><li>Included in every stay</li><li>Vegetarian on request</li></ul>
+        </div>
+        <img class="chap__img" src="images/breakfast-veranda.jpg" alt="Breakfast of fruit, eggs and tea laid out on the veranda" width="1376" height="768" loading="lazy" decoding="async">
+      </article>
+      <article class="chap" id="garden" data-slide="2" data-glow="teal">
+        <div class="chap__copy">
+          <p class="chap__time"><b>15:00</b> Afternoon</p>
+          <h2>A garden at every door</h2>
+          <p class="chap__text">Every room opens onto the garden, with shade under the palms and a quiet veranda for the hot hours.</p>
+          <ul class="facts"><li>Own bathroom</li><li>Air conditioning</li><li>Fast Wi-Fi</li></ul>
+        </div>
+        <img class="chap__img" src="images/room-garden-suite.jpg" alt="The Garden Suite with a sofa, bed and tall windows" width="1200" height="1500" loading="lazy" decoding="async">
+      </article>
+      <article class="chap" id="hosts" data-slide="3" data-glow="sunset">
+        <div class="chap__copy">
+          <p class="chap__time"><b>19:00</b> Evening</p>
+          <h2>Hosts next door</h2>
+          <p class="chap__text">We live next door. Tell us what you enjoy and we will point you to good local food, quiet green corners and a driver we trust.</p>
+          <ul class="facts"><li>1 h from the airport</li><li>Free parking</li></ul>
+        </div>
+        <img class="chap__img" src="images/hosts.jpg" alt="Your hosts on the front steps of Sam Villa" width="896" height="1200" loading="lazy" decoding="async">
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARC GALLERY + BOOKING ============ -->
+<section class="stay" id="stay" aria-labelledby="stay-h">
+  <div class="stay__stage">
+    <!-- REPLACE PHOTOS: the eight gallery photos (portrait 4:5 crops look best) -->
+    <div class="arc" aria-label="Photos of Sam Villa">
+      <figure class="arc__ph" style="--r:-4deg"><img src="images/tea-detail.jpg" alt="Ceylon tea and fruit on the veranda rail" width="1024" height="1024" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:3deg"><img src="images/room-family-room.jpg" alt="The Family Room" width="900" height="900" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:-2deg"><img src="images/breakfast-veranda.jpg" alt="Breakfast on the veranda" width="1376" height="768" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:4deg"><img src="images/hero.jpg" alt="Sam Villa from the garden path" width="1200" height="896" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:-3deg"><img src="images/room-garden-suite.jpg" alt="The Garden Suite" width="1200" height="1500" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:2deg"><img src="images/hosts.jpg" alt="Your hosts" width="896" height="1200" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:-4deg"><img src="images/breakfast-spread.jpg" alt="Eggs and toast for breakfast" width="1600" height="1000" loading="lazy" decoding="async"></figure>
+      <figure class="arc__ph" style="--r:3deg"><img src="images/room-veranda-room.jpg" alt="The Veranda Room" width="900" height="900" loading="lazy" decoding="async"></figure>
+    </div>
+
+    <div class="stay__title" id="stayTitle">
+      <p class="eyebrow">After dark</p>
+      <h2 id="stay-h">Stay a while</h2>
+    </div>
+
+    <!-- EDIT: price, rating and rules. Room rates also live in VILLA.rooms in the script below. -->
+    <div class="book" id="book">
+      <div class="book__info">
+        <p class="eyebrow">Plan your stay</p>
+        <h3 class="book__h">Your garden room is waiting</h3>
+        <div>
+          <div class="price"><span class="price__from">From</span><span class="price__big" id="fromPrice">$70</span><span class="price__per">/ night</span></div>
+          <p class="note">Sample rates. Breakfast is included.</p>
+        </div>
+        <div class="rating"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg><b id="ratingVal">4.9</b><span>sample guest rating</span></div>
+        <ul class="good">
+          <li><b>Check-in</b> from 14:00, <b>check-out</b> by 11:00</li>
+          <li>Free cancellation up to 7 days before arrival</li>
+        </ul>
+      </div>
+
+      <form class="form" id="bookForm" novalidate>
+        <div class="field">
+          <label for="bRoom">Room</label>
+          <select id="bRoom"></select>
+        </div>
+        <div class="form__row">
+          <div class="field" id="ciField"><label for="bIn">Check-in</label><input id="bIn" type="date"></div>
+          <div class="field" id="coField"><label for="bOut">Check-out</label><input id="bOut" type="date"></div>
+        </div>
+        <div class="field">
+          <label for="bGuests">Guests</label>
+          <select id="bGuests"></select>
+        </div>
+        <p class="sum" id="bSum" aria-live="polite"></p>
+        <a class="btn-glow" id="bookBtn" href="index.html#book" target="_blank" rel="noopener">
+          <span id="bookLabel">Check availability</span>
+          <svg viewBox="0 0 256 256" aria-hidden="true" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </a>
+        <p class="note">This sends a request. We confirm by email before anything is final.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <p>Sam Villa, 128/G Namal Uyana, Mattegoda, Sri Lanka</p>
+  <p>&copy; 2026 Sam Villa</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* ==========================================================================
+   EDIT HERE: booking link, rates and rating.
+   bookingUrl: where the glowing button goes. To send guests to Airbnb, paste your
+   listing URL (for example https://www.airbnb.com/rooms/12345678) and set
+   bookingLabel to 'Book on Airbnb'. For Airbnb links the chosen dates and guests
+   are added to the URL automatically.
+   ========================================================================== */
+var VILLA = {
+  bookingUrl: 'index.html#book',
+  bookingLabel: 'Check availability',
+  currency: '$',
+  rating: '4.9',
+  rooms: [                              // sample rates, keep in step with the admin panel
+    { name: 'Garden Suite', rate: 85, sleeps: 2 },
+    { name: 'Family Room', rate: 120, sleeps: 4 },
+    { name: 'Veranda Room', rate: 70, sleeps: 2 },
+    { name: 'Whole Villa', rate: 250, sleeps: 8 }
+  ]
+};
+
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Booking panel (works with or without the animation libraries) ---------- */
+  var room = $('#bRoom'), din = $('#bIn'), dout = $('#bOut'), guests = $('#bGuests'), sum = $('#bSum'), btn = $('#bookBtn');
+  VILLA.rooms.forEach(function (r, i) {
+    var o = document.createElement('option');
+    o.value = i; o.textContent = r.name + ', ' + VILLA.currency + r.rate + ' / night';
+    room.appendChild(o);
+  });
+  for (var g = 1; g <= 8; g++) {
+    var o = document.createElement('option');
+    o.value = g; o.textContent = g + (g === 1 ? ' guest' : ' guests');
+    guests.appendChild(o);
+  }
+  guests.value = '2';
+  $('#fromPrice').textContent = VILLA.currency + Math.min.apply(null, VILLA.rooms.map(function (r) { return r.rate; }));
+  $('#ratingVal').textContent = VILLA.rating;
+  $('#bookLabel').textContent = VILLA.bookingLabel;
+
+  function iso(d) { var z = new Date(d.getTime() - d.getTimezoneOffset() * 6e4); return z.toISOString().slice(0, 10); }
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var a = new Date(today); a.setDate(a.getDate() + 14);
+  var b = new Date(a); b.setDate(b.getDate() + 3);
+  din.min = iso(today); din.value = iso(a); dout.min = iso(today); dout.value = iso(b);
+
+  function bookingHref() {
+    var url = VILLA.bookingUrl;
+    if (/airbnb\./i.test(url)) {
+      var sep = url.indexOf('?') < 0 ? '?' : '&';
+      url += sep + 'check_in=' + din.value + '&check_out=' + dout.value + '&adults=' + guests.value;
+    }
+    return url;
+  }
+  function updateBooking() {
+    var r = VILLA.rooms[+room.value];
+    var n = Math.round((new Date(dout.value) - new Date(din.value)) / 864e5);
+    var bad = !(n > 0);
+    $('#coField').classList.toggle('is-bad', bad);
+    sum.classList.toggle('is-bad', bad);
+    if (bad) { sum.textContent = 'Check-out must be after check-in.'; return; }
+    if (+guests.value > r.sleeps) {
+      sum.classList.add('is-bad');
+      sum.textContent = 'The ' + r.name + ' sleeps ' + r.sleeps + '. Pick the Whole Villa for a bigger group.';
+    } else {
+      sum.textContent = n + (n === 1 ? ' night' : ' nights') + ' for ' + guests.value + (+guests.value === 1 ? ' guest' : ' guests') +
+        ', ' + VILLA.currency + (n * r.rate) + ' total with breakfast';
+    }
+    dout.min = din.value;
+    btn.href = bookingHref();
+  }
+  [room, din, dout, guests].forEach(function (el) { el.addEventListener('change', updateBooking); });
+  $('#bookForm').addEventListener('submit', function (e) { e.preventDefault(); });
+  updateBooking();
+
+  /* ---------- Navbar turns solid once you scroll ---------- */
+  var nav = $('#nav');
+  function navState() { nav.classList.toggle('is-solid', window.scrollY > 40); }
+  window.addEventListener('scroll', navState, { passive: true }); navState();
+
+  /* ---------- Glow and rail helpers ---------- */
+  var glows = {}; $$('.glow__l').forEach(function (l) { glows[l.dataset.glow] = l; });
+  var dots = $$('#dots a'), currentDot = -1;
+  function setDot(i) {
+    if (i === currentDot) return; currentDot = i;
+    dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); if (k === i) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current'); });
+  }
+  function setGlow(name, instant) {
+    Object.keys(glows).forEach(function (k) {
+      var on = k === name;
+      if (window.gsap && !instant) gsap.to(glows[k], { opacity: on ? 1 : 0, duration: 1.1, ease: 'power2.out', overwrite: true });
+      else { glows[k].style.opacity = on ? 1 : 0; }
+    });
+  }
+  setDot(0);
+
+  // Without the libraries (offline, blocked CDN) the page stays in its simple, fully visible layout.
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var chaps = $$('.chap'), slides = $$('.card__slide'), card = $('#card'), intro = $('#intro');
+  var titleEl = $('.intro__title');
+  // Split the villa name into letters for the reveal
+  $$('.w', titleEl).forEach(function (w) {
+    w.setAttribute('aria-hidden', 'true');
+    w.innerHTML = w.textContent.split('').map(function (c) { return '<span class="ch">' + c + '</span>'; }).join('');
+  });
+
+  /* ---------- Reduced motion: no smooth scroll, no pinning, glow changes without fading ---------- */
+  if (reduce) {
+    flowTriggers(true);
+    return;
+  }
+
+  /* ---------- Intro, every screen size: slow zoom and the name rising letter by letter ---------- */
+  gsap.fromTo(slides[0].querySelector('img'), { scale: 1.02 }, { scale: 1.16, duration: 18, ease: 'none' });
+  gsap.from('.intro__title .ch', { yPercent: 115, duration: 1.3, ease: 'expo.out', stagger: 0.06, delay: 0.15 });
+  gsap.from(['.intro .eyebrow', '.intro__row'], { autoAlpha: 0, y: 24, duration: 1, ease: 'power3.out', stagger: 0.12, delay: 0.7 });
+
+  var mm = gsap.matchMedia();
+
+  /* ---------- Desktop: the full cinematic sequence ---------- */
+  mm.add('(min-width: 900px)', function () {
+    root.classList.add('cine');
+
+    var lenis = window.Lenis ? new Lenis({ lerp: 0.09, smoothWheel: true }) : null;
+    var tick = function (t) { lenis.raf(t * 1000); };
+    if (lenis) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    var vw = function () { return window.innerWidth; }, vh = function () { return window.innerHeight; };
+    var box = function () {
+      var w = Math.min(vw() * 0.38, 620), h = Math.min(vh() * 0.68, 720);
+      return { left: vw() - w - Math.max(vw() * 0.06, 64) - 56, top: (vh() - h) / 2 + 30, width: w, height: h };
+    };
+    var caps = $$('.card__cap');
+
+    var tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: '.story', start: 'top top', end: function () { return '+=' + vh() * 4.4; },
+        pin: true, scrub: 1, invalidateOnRefresh: true,
+        onUpdate: function (self) { if (!stayActive) setDot(storyIndex(self.progress)); }
+      }
+    });
+
+    tl.addLabel('top', 0);
+    // 1. The full-screen photo shrinks into a floating card on the right and tilts
+    tl.to(intro, { yPercent: -18, autoAlpha: 0, duration: 0.8, ease: 'power1.in' }, 0)
+      .fromTo(card,
+        { left: 0, top: 0, width: function () { return vw(); }, height: function () { return vh(); }, borderRadius: 0, rotationY: 0, rotationX: 0 },
+        { left: function () { return box().left; }, top: function () { return box().top; }, width: function () { return box().width; }, height: function () { return box().height; },
+          borderRadius: 28, rotationY: -13, rotationX: 4, duration: 1.6, ease: 'power2.inOut' }, 0)
+      .to('.card__shade', { opacity: 0.35, duration: 1.2 }, 0.2)
+      .to(glows.dawn, { opacity: 0, duration: 0.8 }, 0.6)
+      .to(glows.gold, { opacity: 1, duration: 0.8 }, 0.6);
+
+    // 2. One chapter per highlight: copy rises in on the left, the card photo crossfades, the glow shifts
+    var swap = function (i, at, from, to) {
+      var prev = chaps[i - 2];
+      if (prev) tl.to($$('.chap__copy > *', prev), { autoAlpha: 0, y: -40, stagger: 0.04, duration: 0.45, ease: 'power2.in' }, at - 0.5);
+      tl.to(slides[i], { opacity: 1, duration: 0.6 }, at - 0.4)
+        .to(slides[i - 1], { opacity: 0, duration: 0.6 }, at - 0.3)
+        .to(caps[i], { opacity: 1, duration: 0.3 }, at)
+        .to(caps[i - 1], { opacity: 0, duration: 0.2 }, at - 0.4);
+      if (from) tl.to(glows[from], { opacity: 0, duration: 0.8 }, at - 0.4).to(glows[to], { opacity: 1, duration: 0.8 }, at - 0.4);
+      if (i > 1) tl.to(card, { rotationY: i % 2 ? -13 : -7, rotationX: i % 2 ? 4 : 2, duration: 0.9, ease: 'sine.inOut' }, at - 0.5);
+      tl.fromTo($$('.chap__copy > *', chaps[i - 1]), { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, stagger: 0.07, duration: 0.55, ease: 'power3.out' }, at);
+      tl.addLabel(chaps[i - 1].id, at + 0.6);
+    };
+    swap(1, 1.2);
+    swap(2, 3.3, 'gold', 'teal');
+    swap(3, 5.4, 'teal', 'sunset');
+    tl.to({}, { duration: 1.2 }); // hold on the last chapter
+
+    var labelTimes = ['top', 'breakfast', 'garden', 'hosts'].map(function (l) { return tl.labels[l]; });
+    function storyIndex(p) {
+      var t = p * tl.duration(), idx = 0;
+      labelTimes.forEach(function (lt, k) { if (t >= lt - 0.9) idx = k; });
+      return idx;
+    }
+
+    // A gentle float on the card while the story is on screen
+    var float = gsap.to('.card__tilt', { y: -10, duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1, paused: true });
+    ScrollTrigger.create({ trigger: '.story', start: 'top top', end: function () { return '+=' + vh() * 4.4; },
+      onToggle: function (s) { s.isActive ? float.play() : float.pause(); } });
+
+    // 3. Final section: photos fan out into a floating arc, then settle behind the booking panel
+    var phs = $$('.arc__ph'), n = phs.length;
+    var arcAt = function (i) {
+      var ang = (-1 + 2 * i / (n - 1)) * 54, rad = ang * Math.PI / 180;
+      var R = Math.min(vw() * 0.42, vh() * 0.62, 640);
+      return { x: Math.sin(rad) * R, y: (1 - Math.cos(rad)) * R * 0.95 - R * 0.42, rotation: ang * 0.5 };
+    };
+    gsap.set(phs, { xPercent: -50, yPercent: -50 });
+    gsap.set(['#stayTitle', '#book'], { xPercent: -50, yPercent: -50 });
+
+    var st = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: '.stay', start: 'top 70%', end: function () { return '+=' + vh() * 3.3; }, scrub: 1, invalidateOnRefresh: true }
+    });
+    ScrollTrigger.create({ trigger: '.stay', start: 'top top', end: function () { return '+=' + vh() * 2.6; }, pin: true, invalidateOnRefresh: true });
+    st.fromTo(glows.sunset, { opacity: 1 }, { opacity: 0, duration: 0.8, immediateRender: false }, 0)
+      .fromTo(glows.night, { opacity: 0 }, { opacity: 1, duration: 0.8, immediateRender: false }, 0);
+    phs.forEach(function (p, i) {
+      st.fromTo(p,
+        { x: 0, y: function () { return vh() * 0.3; }, rotation: (i - (n - 1) / 2) * 4, scale: 0.5, autoAlpha: 0 },
+        { x: function () { return arcAt(i).x; }, y: function () { return arcAt(i).y; }, rotation: function () { return arcAt(i).rotation; },
+          scale: 1, autoAlpha: 1, duration: 1.3, ease: 'power3.out' },
+        0.1 + Math.abs(i - (n - 1) / 2) * 0.07);
+    });
+    st.fromTo('#stayTitle', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.6)
+      .addLabel('arc', 1.7)
+      .to({}, { duration: 0.5 })
+      .to('#stayTitle', { autoAlpha: 0, y: -30, duration: 0.5, ease: 'power2.in' }, 2.1)
+      .to(phs, { y: function (i) { return arcAt(i).y - vh() * 0.22; }, scale: 0.7, autoAlpha: 0.28, duration: 1, ease: 'power2.inOut' }, 2.2)
+      .fromTo('#book', { autoAlpha: 0, y: 90, scale: 0.96 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out' }, 2.5)
+      .addLabel('stay', 3.5)
+      .to({}, { duration: 0.6 });
+
+    // Each photo floats on its own rhythm (the img moves, so it never fights the scroll animation)
+    var floats = phs.map(function (p, i) {
+      return gsap.to(p.querySelector('img'), { y: i % 2 ? 8 : -8, duration: 2.4 + (i % 3) * 0.5, ease: 'sine.inOut', yoyo: true, repeat: -1, paused: true });
+    });
+
+    var stayActive = false;
+    ScrollTrigger.create({ trigger: '.stay', start: 'top 55%', end: 'max',
+      onEnter: function () { stayActive = true; floats.forEach(function (f) { f.play(); }); setDot(4); },
+      onLeaveBack: function () { stayActive = false; floats.forEach(function (f) { f.pause(); }); setDot(storyIndex(tl.scrollTrigger.progress)); } });
+
+    /* Rail, navbar and in-page links scroll to the matching moment of the animation */
+    function yFor(id) {
+      if (id === 'stay') { var s = st.scrollTrigger; return s.start + (s.end - s.start) * (st.labels.stay / st.duration()); }
+      var lt = tl.labels[id]; if (lt === undefined) return null;
+      var t = tl.scrollTrigger; return t.start + (t.end - t.start) * (lt / tl.duration());
+    }
+    function onLink(e) {
+      var a = e.target.closest('a[href^="#"]'); if (!a) return;
+      var y = yFor(a.getAttribute('href').slice(1)); if (y === null) return;
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(y, { duration: 1.8 }); else window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    document.addEventListener('click', onLink);
+
+    return function () {
+      root.classList.remove('cine');
+      document.removeEventListener('click', onLink);
+      if (lenis) { gsap.ticker.remove(tick); lenis.destroy(); }
+      floats.forEach(function (f) { f.kill(); }); float.kill();
+    };
+  });
+
+  /* ---------- Phones and tablets: stacked layout with light fades ---------- */
+  mm.add('(max-width: 899px)', function () {
+    chaps.forEach(function (c) {
+      gsap.from(c.children, { autoAlpha: 0, y: 40, duration: 0.9, ease: 'power3.out', stagger: 0.12,
+        scrollTrigger: { trigger: c, start: 'top 80%', once: true } });
+    });
+    gsap.from('.arc__ph', { autoAlpha: 0, y: 40, rotation: 0, duration: 0.8, ease: 'power3.out', stagger: 0.06,
+      scrollTrigger: { trigger: '.arc', start: 'top 85%', once: true } });
+    flowTriggers(false);
+  });
+
+  // Glow and rail for the stacked layout: switch as each section crosses the middle of the screen
+  function flowTriggers(instant) {
+    var parts = [['#card', 'dawn'], ['#breakfast', 'gold'], ['#garden', 'teal'], ['#hosts', 'sunset'], ['#stay', 'night']];
+    parts.forEach(function (p, i) {
+      ScrollTrigger.create({ trigger: p[0], start: 'top 55%', end: 'bottom 55%',
+        onToggle: function (s) { if (s.isActive) { setDot(i); setGlow(p[1], instant); } } });
+    });
+    ScrollTrigger.create({ trigger: '#card', start: 'top top', end: 'bottom 55%', onEnterBack: function () { setDot(0); setGlow('dawn', instant); } });
+  }
+})();
+</script>
+</body>
+</html>
